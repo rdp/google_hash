@@ -14,6 +14,13 @@ struct eqstr
   }
 };
 
+
+typedef struct {
+    VALUE object;
+	ID method;
+} RCallback;
+
+
 int main()
 {
   sparse_hash_map<const char*, int, hash<const char*>, eqstr> months;
