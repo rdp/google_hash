@@ -1,5 +1,6 @@
 #include <iostream>
 #include <google/sparse_hash_map>
+#include <ruby.h>
 
 using google::sparse_hash_map;      // namespace where class lives by default
 using std::cout;
