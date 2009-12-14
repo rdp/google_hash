@@ -41,18 +41,3 @@ int main()
   }
    
 }
-
-/*
-
-
-   for (sparse_hash_map<int*, ComplicatedClass>::iterator it = ht.begin();
-        it != ht.end(); ++it) {
-       // The key is stored in the sparse_hash_map as a pointer
-       const_cast<int*>(it->first) = new int;
-       fread(const_cast<int*>(it->first), sizeof(int), 1, fp);
-       // The value is a complicated C++ class that takes an int to construct
-       int ctor_arg;
-       fread(&ctor_arg, sizeof(int), 1, fp);
-       new (&it->second) ComplicatedClass(ctor_arg);  // "placement new"
-   }
-*/
