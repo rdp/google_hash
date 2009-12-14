@@ -49,3 +49,9 @@ int main()
   }
    
 }
+
+extern "C" {
+
+  void Init_mytest() {} 
+}
+
