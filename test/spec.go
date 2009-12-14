@@ -1,9 +1,11 @@
 require 'sane'
+require_rel '../ext/google_hash.so'
+require 'spec/autorun'
 
-describe GoogleHashSpace do
+describe GoogleHashSmall do
 
   before do
-   @subject = GoogleHashSpace.new
+   @subject = GoogleHashSmall.new
   end
 
   it "should be instantiable" do
