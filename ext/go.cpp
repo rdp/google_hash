@@ -52,6 +52,9 @@ int main()
 
 extern "C" {
 
-  void Init_mytest() {} 
+  void Init_google_hash() {
+    VALUE rb_cGoogleHashSmall = rb_define_class("GoogleHashSmall", rb_cObject);
+
+  } 
 }
 
