@@ -1,3 +1,5 @@
+require 'sane'
+
 describe GoogleHashSpace do
 
   before do
