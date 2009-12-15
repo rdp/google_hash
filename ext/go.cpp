@@ -77,7 +77,6 @@ static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
   if(!(TYPE(set_this) == T_FIXNUM)) {
      rb_raise(rb_eTypeError, "not valid value");
   }
-  cout << "got set this" << FIX2INT(set_this) << "and to_this ruby" << FIX2INT(to_this);
   RCallback* cbs = GetCallbackStruct(cb);
   (*cbs->hash_map)[FIX2INT(set_this)] = to_this;  
   return to_this; // ltodo test that it returns value...
@@ -88,9 +87,7 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
      rb_raise(rb_eTypeError, "not valid value");
   }
   RCallback* cbs = GetCallbackStruct(cb);
-  cout << "retrieving  from key..." << FIX2INT(get_this);
   VALUE out = (*cbs->hash_map)[FIX2INT(get_this)];
-  cout << 'returning almost:' << out << "  might be integer -> " << INT2FIX(out) << "\n";
   // todo if out == 0 return Qnil
   return out;
 }
