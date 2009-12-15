@@ -1,0 +1,1 @@
+ruby extconf.rb && make && ruby benchmark.rb
