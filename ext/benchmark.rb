@@ -1,4 +1,4 @@
-require 'google_hash'
+require './google_hash'
 require 'benchmark'
 
 for name in [GoogleHashSparse, GoogleHashDense, Hash] do
