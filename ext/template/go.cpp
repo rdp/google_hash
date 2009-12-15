@@ -43,6 +43,9 @@ callback_alloc( VALUE klass )
     RCallback* cbs;
     cb = Data_Make_Struct(klass, RCallback, /*mark_mri_callback*/ 0, 0 /*free_mri_callback*/, cbs);
     cbs->hash_map = new <%= type %>_hash_map<int, VALUE>();
+    <% if setup_code %>
+	 cbs->hash_map-><%= setup_code %>;
+    <% end %> 
     return cb;
 }
 

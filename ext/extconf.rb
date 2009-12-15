@@ -1,7 +1,7 @@
 require 'mkmf'
+require 'erb'
 require 'rubygems'
-require 'sane' # dependency!
-
+require 'sane'
 
 # build google's lib locally...
 
@@ -10,17 +10,19 @@ Dir.chdir 'sparsehash-1.5.2' do
   dir = dir + '/local_installed'
   command = "sh configure --prefix=#{dir} && make && make install"
   puts command
+  # only if necessary
   system command unless File.directory?(dir)
 end
 
 $CFLAGS += " -I./local_installed/include "
 
-# create our wrapper files...
-require 'erb'
-for type in ['sparse', 'dense'] do
-  x = 42
+# create our files...
+# currently we're int only...hmm...
+# ltodo 64 bit compat...
+
+for type, setup_code in {'sparse' => nil, 'dense' => 'set_empty_key(1<<31);' } do
   template = ERB.new(File.read('template/go.cpp'))
-  File.write(type + '.cpp', template.result(binding))
+  File.write(type.to_s + '.cpp', template.result(binding))
 end
 
 create_makefile('google_hash')
