@@ -2,7 +2,7 @@ This is a ruby gem that wraps google's "sparse" and "dense" hashes.
 
 Current usage:
 
-a = GoogleHash.new
+a = GoogleHashSmall.new
 a[3] = 'abc' # only accept integers for keys currently.
 
 The dense hash tends to be a bit faster than ruby's normal hash, and the sparse hash tends to use less RAM.

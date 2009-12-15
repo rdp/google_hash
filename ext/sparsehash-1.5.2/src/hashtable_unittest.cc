@@ -99,7 +99,7 @@ using STL_NAMESPACE::ostream;
 #define CHECK_LT(a, b)  CHECK((a) < (b))
 #define CHECK_GE(a, b)  CHECK((a) >= (b))
 
-#if !defined(WIN32) || defined(__MINGW32__) 
+#ifndef _MSC_VER
 static string TmpFile(const char* basename) {
   return string("/tmp/") + basename;
 }

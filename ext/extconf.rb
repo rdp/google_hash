@@ -8,7 +8,7 @@ Dir.chdir 'sparsehash-1.5.2' do
   dir = dir + '/local_installed'
   command = "sh configure --prefix=#{dir} && make && make install"
   puts command
-  #system command
+  system command
 end
 
 $CFLAGS += " -I./local_installed/include "
