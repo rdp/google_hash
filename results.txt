@@ -1,0 +1,29 @@
+1.9 mingw:
+
+GoogleHashSparse
+0.53125   (populate)
+0.078125 (each)
+
+GoogleHashDense
+0.1875   (populate)
+0.078125 (each)
+
+Hash
+0.359375   (populate)
+1.1875 (each)
+
+
+ruby 1.8.6 mingw:
+
+GoogleHashSparse
+0.625   (populate)
+0.546875(each)
+
+GoogleHashDense
+0.234375(populate)
+0.421875(each)
+
+Hash
+0.5   (populate)
+0.53125 (each)
+

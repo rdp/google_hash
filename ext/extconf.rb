@@ -16,6 +16,11 @@ end
 
 $CFLAGS += " -I./local_installed/include "
 
+if RUBY_VERSION < '1.9'
+ # appears to link using gcc on 1.8 [mingw at least]
+ $LDFLAGS += " -lstdc++ "
+end
+
 # create our files...
 # currently we're int only...hmm...
 # ltodo 64 bit compat...
