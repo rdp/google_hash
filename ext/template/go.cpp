@@ -1,8 +1,8 @@
 #include <iostream>
-#include <google/sparse_hash_map>
+#include <google/<%= type %>_hash_map>
 #include <ruby.h>
 
-using google::sparse_hash_map;      // namespace where class lives by default
+using google::<%= type %>_hash_map;      // namespace where class lives by default
 using std::cout;
 using std::endl;
 using __gnu_cxx::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
@@ -26,10 +26,10 @@ struct eqint
 };
 
 typedef struct {
-  sparse_hash_map<int, VALUE> *hash_map;
+  <%= type %>_hash_map<int, VALUE> *hash_map;
 } RCallback;
 
-static VALUE rb_cGoogleHashSmall;
+static VALUE rb_cGoogleHash<%= type %>;
 
 
 static void mark_hash_map_values(RCallback incoming) {} // TODO, etc.
@@ -42,12 +42,7 @@ callback_alloc( VALUE klass )
     VALUE cb;
     RCallback* cbs;
     cb = Data_Make_Struct(klass, RCallback, /*mark_mri_callback*/ 0, 0 /*free_mri_callback*/, cbs);
-    cbs->hash_map = new sparse_hash_map<int, VALUE>();
-    sparse_hash_map<int, int> a;
-    a[35] = 47;
-    sparse_hash_map<int, int> *a2 = new sparse_hash_map<int, int>;
-    (*a2)[35] = 37;
-    (*cbs->hash_map)[33] = 35;
+    cbs->hash_map = new <%= type %>_hash_map<int, VALUE>();
     return cb;
 }
 
@@ -60,19 +55,7 @@ rb_mri_hash_new(VALUE freshly_created) {
   return freshly_created;
 }
 
-int main()
-{
-  sparse_hash_map<const char*, int, hash<const char*>, eqstr> months;
-  
-  months["april"] = 30;
-  
-  cout << "april     -> " << months["april"] << endl;
-  cout << "iterating";
-  for(sparse_hash_map<const char*, int, hash<const char*>, eqstr>::iterator it = months.begin(); it != months.end(); ++it) {
-    cout << it->first;
-  }
-   
-}
+
 static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
   if(!(TYPE(set_this) == T_FIXNUM)) {
      rb_raise(rb_eTypeError, "not valid value");
@@ -92,17 +75,14 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
   return out;
 }
 
-void Init_google_hash() {
-    rb_cGoogleHashSmall = rb_define_class("GoogleHashSmall", rb_cObject);
+void init_<%= type %>() {
+    rb_cGoogleHash<%= type %> = rb_define_class("GoogleHash<%= type.capitalize %>", rb_cObject);
 
-    rb_define_alloc_func(rb_cGoogleHashSmall, callback_alloc); // I guess it calls this for us, pre initialize... 
+    rb_define_alloc_func(rb_cGoogleHash<%= type %>, callback_alloc); // I guess it calls this for us, pre initialize... 
 
-    rb_define_method(rb_cGoogleHashSmall, "initialize", RUBY_METHOD_FUNC(rb_mri_hash_new), 0); 
-    rb_define_method(rb_cGoogleHashSmall, "[]=", RUBY_METHOD_FUNC(rb_ghash_set), 2); 
-    rb_define_method(rb_cGoogleHashSmall, "[]", RUBY_METHOD_FUNC(rb_ghash_get), 1); 
-
-
-    main();
+    rb_define_method(rb_cGoogleHash<%= type %>, "initialize", RUBY_METHOD_FUNC(rb_mri_hash_new), 0); 
+    rb_define_method(rb_cGoogleHash<%= type %>, "[]=", RUBY_METHOD_FUNC(rb_ghash_set), 2); 
+    rb_define_method(rb_cGoogleHash<%= type %>, "[]", RUBY_METHOD_FUNC(rb_ghash_get), 1); 
 
   } 
 }
