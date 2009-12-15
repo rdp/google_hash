@@ -90,8 +90,7 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
     RCallback* incoming = GetCallbackStruct(cb);
     // TODO assert block given
   for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
-    cout << "got key " << it->first << " ";
-    rb_yield(INT2FIX(it->first));
+    rb_yield_values(2, INT2FIX(it->first), it->second);
   }
   return cb;
   
