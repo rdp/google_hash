@@ -1,7 +1,11 @@
-describe GoogleHashSpace do
+require 'sane'
+require_rel '../ext/google_hash.so'
+require 'spec/autorun'
+
+describe GoogleHashSmall do
 
   before do
-   @subject = GoogleHashSpace.new
+   @subject = GoogleHashSmall.new
   end
 
   it "should be instantiable" do
@@ -58,5 +62,9 @@ describe GoogleHashSpace do
   end
 
   # todo do the non sparse, too...
+
+  it "should return nil if key is absent" do
+    @subject[33].should be_nil
+  end
 
 end
