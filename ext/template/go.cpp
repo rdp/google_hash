@@ -32,17 +32,14 @@ typedef struct {
 static VALUE rb_cGoogleHash<%= type %>;
 
 
-static void mark_hash_map_values(RCallback incoming) {
-
-  for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming.hash_map->begin(); it != incoming.hash_map->end(); ++it) {
-    cout << "marking";
-    rb_gc_mark(it->second);
+static void mark_hash_map_values(RCallback *incoming) {
+  for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+     rb_gc_mark(it->second);
   }
-
 }
 
 static void free_hash_callback(RCallback* cb) {
-  delete cb->hash_map;
+  //  delete cb->hash_map;
 }
 
 static VALUE callback_alloc _((VALUE)); // what does this line do?
