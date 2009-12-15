@@ -86,6 +86,16 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
   return out;
 }
 
+  static VALUE rb_ghash_each(VALUE cb) {
+    RCallback* incoming = GetCallbackStruct(cb);
+    // TODO assert block given
+  for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+    rb_yield(it->first);
+  }
+  return cb;
+  
+  }
+
 void init_<%= type %>() {
     rb_cGoogleHash<%= type %> = rb_define_class("GoogleHash<%= type.capitalize %>", rb_cObject);
 
@@ -94,6 +104,7 @@ void init_<%= type %>() {
     rb_define_method(rb_cGoogleHash<%= type %>, "initialize", RUBY_METHOD_FUNC(rb_mri_hash_new), 0); 
     rb_define_method(rb_cGoogleHash<%= type %>, "[]=", RUBY_METHOD_FUNC(rb_ghash_set), 2); 
     rb_define_method(rb_cGoogleHash<%= type %>, "[]", RUBY_METHOD_FUNC(rb_ghash_get), 1); 
+    rb_define_method(rb_cGoogleHash<%= type %>, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0); 
 
   } 
 }
