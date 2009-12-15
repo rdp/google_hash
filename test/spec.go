@@ -63,4 +63,8 @@ describe GoogleHashSmall do
 
   # todo do the non sparse, too...
 
+  it "should return nil if key is absent" do
+    @subject[33].should be_nil
+  end
+
 end
