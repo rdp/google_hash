@@ -32,7 +32,18 @@ typedef struct {
 static VALUE rb_cGoogleHash<%= type %>;
 
 
-static void mark_hash_map_values(RCallback incoming) {} // TODO, etc.
+static void mark_hash_map_values(RCallback incoming) {
+
+  for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming.hash_map->begin(); it != incoming.hash_map->end(); ++it) {
+    cout << "marking";
+    rb_gc_mark(it->second);
+  }
+
+}
+
+static void free_hash_callback(RCallback* cb) {
+  delete cb->hash_map;
+}
 
 static VALUE callback_alloc _((VALUE)); // what does this line do?
 
@@ -41,7 +52,7 @@ callback_alloc( VALUE klass )
 {
     VALUE cb;
     RCallback* cbs;
-    cb = Data_Make_Struct(klass, RCallback, /*mark_mri_callback*/ 0, 0 /*free_mri_callback*/, cbs);
+    cb = Data_Make_Struct(klass, RCallback, mark_hash_map_values, free_hash_callback, cbs);
     cbs->hash_map = new <%= type %>_hash_map<int, VALUE>();
     <% if setup_code %>
 	 cbs->hash_map-><%= setup_code %>;
