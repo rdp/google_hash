@@ -6,6 +6,6 @@ Jeweler::Tasks.new do |gemspec|
     gemspec.email = "rogerdpack@gmail.com"
     gemspec.homepage = "http://github.com/rdp/ruby_google_hash"
     gemspec.authors = ["rogerdpack"]
-    gemspec.add_development_dependency('sane')
+    gemspec.add_dependency('sane')
 end
 
