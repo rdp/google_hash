@@ -1,0 +1,21 @@
+This is a ruby gem that wraps google's "sparse" and "dense" hashes.
+
+Current usage:
+
+a = GoogleHash.new
+a[3] = 'abc' # only accept integers for keys currently.
+
+The dense hash tends to be a bit faster than ruby's normal hash, and the sparse hash tends to use less RAM.
+
+Still in pre-alpha.
+
+The goal is basically a faster hash, but also one that is more space efficient than ruby's default.
+
+
+ex (end goal):
+
+Google::Hash::Dense(:int => :int) # stores them away as real ints, instead of ruby value's, thus they don't cause a hit to garbage collection.
+
+Google::Hash::Sparse(:symbol => :string) # stores away its own separate copies of the strings, stores the symbols as ints, thus saving tons of space and also both objects don't have to hit garbage collection.  Saves on speed.
+
+If you have a desired use case let me know and I might well code it up for you.
