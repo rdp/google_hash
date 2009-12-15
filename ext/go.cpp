@@ -26,7 +26,7 @@ struct eqint
 };
 
 typedef struct {
-  sparse_hash_map<int, VALUE, hash<int>, eqint> *hash_map;
+  sparse_hash_map<int, VALUE> *hash_map;
 } RCallback;
 
 static VALUE rb_cGoogleHashSmall;
@@ -42,10 +42,10 @@ callback_alloc( VALUE klass )
     VALUE cb;
     RCallback* cbs;
     cb = Data_Make_Struct(klass, RCallback, /*mark_mri_callback*/ 0, 0 /*free_mri_callback*/, cbs);
-    cbs->hash_map = new sparse_hash_map<int, VALUE, hash<int>, eqint>();
+    cbs->hash_map = new sparse_hash_map<int, VALUE>();
     sparse_hash_map<int, int> a;
     a[35] = 47;
-    sparse_hash_map<int, int, hash<int>, eqint> *a2 = new sparse_hash_map<int, int, hash<int>, eqint>;
+    sparse_hash_map<int, int> *a2 = new sparse_hash_map<int, int>;
     (*a2)[35] = 37;
     (*cbs->hash_map)[33] = 35;
     return cb;
