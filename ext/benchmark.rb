@@ -1,7 +1,10 @@
 require './google_hash'
 require 'benchmark'
 
-num = 500000
+
+
+def go num
+puts
 puts num
 
 for name in [GoogleHashSparse, GoogleHashDense, Hash] do
@@ -13,3 +16,7 @@ for name in [GoogleHashSparse, GoogleHashDense, Hash] do
    puts Benchmark.realtime { num.times {|n| subject[n]}}.to_s + " (lookup)"
 
 end
+end
+
+num = 500000
+go num if $0 ==__FILE__
