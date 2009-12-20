@@ -61,7 +61,7 @@ describe "google_hash" do
   end
 
   it "should disallow non numeric keys" do
-    @subject['33'].should raise_exception
+    lambda { @subject['33']}.should raise_error(TypeError)
   end
 
 #  it "should allow for non numeric keys" do
@@ -74,6 +74,11 @@ describe "google_hash" do
 
   it "should return nil if key is absent" do
     @subject[33].should be_nil
+  end
+
+  it "should work with 0's" do
+   @subject[0] = 'abc'
+   @subject[0].should == 'abc'
   end
 
   
