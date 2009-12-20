@@ -85,7 +85,9 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
   }
   RCallback* cbs = GetCallbackStruct(cb);
   VALUE out = (*cbs->hash_map)[FIX2INT(get_this)];
-  // todo if out == 0 return Qnil
+  if(out == NULL) { // null pointer means "wasn't found"
+    return Qnil;
+  }
   return out;
 }
 

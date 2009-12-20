@@ -27,7 +27,7 @@ end
 # if I ever use longs :)
 
 for type, setup_code in {'sparse' => nil, 'dense' => 'set_empty_key(1<<31);' } do
-  template = ERB.new(File.read('template/go.cpp'))
+  template = ERB.new(File.read('template/google_hash.cpp.erb'))
   File.write(type.to_s + '.cpp', template.result(binding))
 end
 
