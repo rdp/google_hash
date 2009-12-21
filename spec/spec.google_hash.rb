@@ -100,6 +100,18 @@ describe "google_hash" do
 
   it "Set should have #combination calls"
 
-
+  it "should have an Array for values, keys" do
+    @subject[33] = 34
+    @subject.keys.should == [33]
+    @subject.values.should == [34]
+  end
+  
+  it "should have an Enumerator for values, keys, on demand"
+  
+  it "should have a block for values, keys, on demand"
+  
+  it "should have real sets"
+  
+  it "should skip GC when native to native"
 
 end

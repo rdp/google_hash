@@ -5,11 +5,13 @@
 using google::<%= type %>_hash_map;      // namespace where class lives by default
 using std::cout;
 using std::endl;
-<% if !OS.windows? %>
-#include <ext/hash_set>
+<% if OS.linux? %>
+  #include <ext/hash_set>
 <% end %>
 using __gnu_cxx::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
 extern "C" {
+
+// some helpers
 
 struct eqstr
 {
@@ -20,6 +22,31 @@ struct eqstr
 };
 
 
+struct eqrb
+{
+  bool operator()(const VALUE s1, const VALUE s2) const
+  {
+    if(s1 == s2) {
+      return true;
+    }
+    return rb_eql(s1, s2); // this is eql? on them, basically
+    // return RTEST(rb_funcall(obj1, id_eql, 1, obj2));
+    // ugh
+  }
+};
+
+
+struct hashrb
+{
+    size_t operator()(const VALUE hash_me) const
+      {
+        return rb_hash(hash_me);
+      }
+};
+
+
+
+/* we end up not needing this...or at least not using it, I don't know if it would be faster than using the default or not
 struct eqint
 {
   inline bool operator()(int s1, int s2) const
@@ -27,13 +54,15 @@ struct eqint
     return s1 == s2;
   }
 };
+*/
+
 
 typedef struct {
   <%= type %>_hash_map<int, VALUE> *hash_map;
 } RCallback;
 
-static VALUE rb_cGoogleHash<%= type %>;
 
+static VALUE rb_cGoogleHash<%= type %>;
 
 static void mark_hash_map_values(RCallback *incoming) {
   for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
@@ -100,6 +129,25 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
   return cb;
   
   }
+  
+  static VALUE rb_ghash_values(VALUE cb) {
+    RCallback* incoming = GetCallbackStruct(cb);
+    VALUE out = rb_ary_new2(incoming->hash_map->size());
+     for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+      rb_ary_push(out, it->second);
+    } 
+    return out;
+  }
+  
+  static VALUE rb_ghash_keys(VALUE cb) {
+    RCallback* incoming = GetCallbackStruct(cb);
+    VALUE out = rb_ary_new2(incoming->hash_map->size());
+     for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+      rb_ary_push(out, INT2FIX(it->first));
+    } 
+    return out;
+  }
+
 
 void init_<%= type %>() {
     rb_cGoogleHash<%= type %> = rb_define_class("GoogleHash<%= type.capitalize %>", rb_cObject);
@@ -109,7 +157,9 @@ void init_<%= type %>() {
     rb_define_method(rb_cGoogleHash<%= type %>, "initialize", RUBY_METHOD_FUNC(rb_mri_hash_new), 0); 
     rb_define_method(rb_cGoogleHash<%= type %>, "[]=", RUBY_METHOD_FUNC(rb_ghash_set), 2); 
     rb_define_method(rb_cGoogleHash<%= type %>, "[]", RUBY_METHOD_FUNC(rb_ghash_get), 1); 
-    rb_define_method(rb_cGoogleHash<%= type %>, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0); 
+    rb_define_method(rb_cGoogleHash<%= type %>, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0);
+    rb_define_method(rb_cGoogleHash<%= type %>, "values", RUBY_METHOD_FUNC(rb_ghash_values), 0); 
+    rb_define_method(rb_cGoogleHash<%= type %>, "keys", RUBY_METHOD_FUNC(rb_ghash_keys), 0); 
 
   } 
 }
