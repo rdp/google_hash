@@ -14,7 +14,7 @@ def go num
   puts num
   # get all existing
   all = [Hash] + Object.constants.grep(/Goog/).reject{|n| n == :GoogleHash}.map{|n| eval n}
-_dbg
+
   for name in all do
     GC.start
     subject = name.new

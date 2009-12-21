@@ -168,7 +168,7 @@ static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
     }
   <% end %>
   RCallback* cbs = GetCallbackStruct(cb);
-  (*cbs->hash_map)[ <%= convert_keys_from_ruby %>(set_this)] = to_this;  
+  (*cbs->hash_map)[ <%= convert_keys_from_ruby %>(set_this)] = <%= convert_values_from_ruby %>(to_this);  
   return to_this; // ltodo test that it returns value...
 }
 
@@ -184,13 +184,13 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
   if(out == NULL) { // not found...hmm...
     return Qnil;
   }
-  return out;
+  return <%= convert_values_to_ruby %>(out);
 }
 
 static VALUE rb_ghash_each(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
-      rb_yield_values(2, <%= convert_keys_to_ruby %>(it->first), it->second);
+      rb_yield_values(2, <%= convert_keys_to_ruby %>(it->first), <%= convert_values_to_ruby %>(it->second));
     }
     return cb;  
 }
@@ -199,7 +199,7 @@ static VALUE rb_ghash_values(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
     VALUE out = rb_ary_new2(incoming->hash_map->size());
      for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %>  >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
-      rb_ary_push(out, it->second);
+      rb_ary_push(out, <%= convert_values_to_ruby %>(it->second));
     } 
     return out;
 }
@@ -214,7 +214,7 @@ static VALUE rb_ghash_keys(VALUE cb) {
 }
 
 
-// only yield
+// only yields for now :)
 
 static VALUE rb_ghash_combination_2(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);

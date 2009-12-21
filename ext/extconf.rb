@@ -62,6 +62,9 @@ for options in [int_to_ruby, ruby_to_ruby] do
   english_value_type = options[:value_type] == 'VALUE' ? 'ruby' : options[:value_type]
   
   assert_key_type = options[:assert_key_type]
+  convert_values_from_ruby = options[:convert_values_from_ruby]
+  convert_values_to_ruby = options[:convert_values_to_ruby]
+  
   
   if options[:key_type] == 'VALUE'
     extra_hash_params =  ", hashrb, eqrb"  # use these methods for comparison

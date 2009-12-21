@@ -147,6 +147,17 @@ describe "google_hash" do
     @subject.values.should == [34]
   end
   
+  it "should work with all Longs" do
+    a = GoogleHashDenseLongToLong.new
+    a[3] = 4
+    a[3].should == 4
+  end
+  
+  it "should raise on errant values" do
+    a = GoogleHashDenseLongToLong.new
+    proc { a[3] = 4}.should raise_error
+  end  
+  
   it "should have an Enumerator for values, keys, on demand"
   
   it "should have a block for values, keys, on demand"
