@@ -52,6 +52,9 @@ describe "google_hash" do
     a = GoogleHashSparseRubyToRuby.new
     a['abc'] = 'def'
     a['abc'].should == 'def'
+    a = GoogleHashDenseRubyToRuby.new
+    a['abc'] = 'def'
+    a['abc'].should == 'def'
   end
 
   it "should have better namespace" do

@@ -35,8 +35,7 @@ int_to_ruby =  {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2
 
 # TODO 64 bit?
 
-ruby_to_ruby = {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :value_type => "VALUE"}
-
+ruby_to_ruby = {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :value_type => "VALUE", :unreachable_key => "NULL"}
 
 init_funcs = []
 
