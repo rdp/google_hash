@@ -26,8 +26,11 @@ end
 # ltodo if I am using longs, this 31 needs to be a 63 on 64 bit machines...
 # if I ever use longs :)
 
-for type, setup_code in {'sparse' => nil, 'dense' => 'set_empty_key(1<<31);' } do
-  template = ERB.new(File.read('template/google_hash.cpp.erb'))
+int_type = {:convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX"}
+
+
+for type, options in {'sparse' => int_type, 'dense' => int_type.merge(:setup_code => 'set_empty_key(1<<31);') } do
+  template = ERB.new(File.read('template/google_hash.cpp.erb'))  
   File.write(type.to_s + '.cpp', template.result(binding))
 end
 

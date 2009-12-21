@@ -1,1 +1,1 @@
-ruby extconf.rb && make clean && make && ruby benchmark.rb
+ruby extconf.rb && make clean && make

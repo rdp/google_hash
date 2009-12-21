@@ -83,8 +83,8 @@ callback_alloc( VALUE klass )
     RCallback* cbs;
     cb = Data_Make_Struct(klass, RCallback, mark_hash_map_values, free_hash_callback, cbs);
     cbs->hash_map = new <%= type %>_hash_map<int, VALUE>();
-    <% if setup_code %>
-	 cbs->hash_map-><%= setup_code %>;
+    <% if options[:setup_code] %>
+	     cbs->hash_map-><%= options[:setup_code] %>;
     <% end %> 
     return cb;
 }
@@ -122,7 +122,7 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
 
   static VALUE rb_ghash_each(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
-    // TODO assert block given
+    // LODO assert block given
   for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
     rb_yield_values(2, INT2FIX(it->first), it->second);
   }
