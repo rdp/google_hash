@@ -1,49 +1,7 @@
-1.9 mingw:
+Here some 1.9 mingw results
 
-100000
-GoogleHashSparse
-0.125   (populate)
-0.015625 (each)
-0.046875 (lookup)
-GoogleHashDense
-0.046875   (populate)
-0.015625 (each)
-0.015625 (lookup)
-Hash
-0.09375   (populate)
-0.203125 (each)
-0.015625 (lookup)
+http://pastie.org/752318
 
-1000000
-GoogleHashSparse
-1.3125   (populate)
-0.171875 (each)
-0.375 (lookup)
-GoogleHashDense
-0.390625   (populate)
-0.15625 (each)
-0.25 (lookup)
-Hash
-0.9375   (populate)
-13.40625 (each)
-0.25 (lookup)
-
-10000000
-GoogleHashSparse
-12.09375   (populate)
-1.59375 (each)
-3.46875 (lookup)
-GoogleHashDense
-4.1875   (populate)
-1.484375 (each)
-2.328125 (lookup)
-Hash
-22.078125   (populate)
-1269.9375 (each)
-1.90625 (lookup)
-
-
-(the rest all used 500000)
 
 
 ruby 1.8.6 mingw:
@@ -59,7 +17,6 @@ GoogleHashDense
 Hash
 0.5   (populate)
 0.53125 (each)
-
 
 1.9.2 linux:
 
