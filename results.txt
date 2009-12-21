@@ -2,6 +2,9 @@ Here some 1.9 mingw results
 
 http://pastie.org/752318
 
+1.9.2 linux:
+
+http://pastie.org/752333
 
 
 ruby 1.8.6 mingw:
@@ -17,20 +20,6 @@ GoogleHashDense
 Hash
 0.5   (populate)
 0.53125 (each)
-
-1.9.2 linux:
-
-GoogleHashSparse
-0.3342118263244629   (populate)
-0.05078697204589844 (each)
-
-GoogleHashDense
-0.14588713645935059   (populate)
-0.056185007095336914 (each)
-
-Hash
-0.34199094772338867   (populate)
-0.8924679756164551 (each)
 
 1.8.6 linux:
 
