@@ -31,13 +31,14 @@ struct eqrb
 {
   bool operator()(const VALUE s1, const VALUE s2) const
   {
-    /*
+    // LTODO if the key is an int, this slows down lookup...
+    // or does it?
     if(s1 == s2) {
       return true;
     }
-    */
     
-    // now from object.c's rb_eql lookup 0.278 -> 0.26 
+    // this line from object.c's rb_eql 
+    // lookup 0.278 -> 0.26 
 
     return RTEST(rb_funcall(s1, id_eql, 1, s2));
   }
@@ -49,6 +50,16 @@ struct hashrb
       {
            // stolen from hash.c populate -> 0.64 0.625
         
+           // hmm
+           // use our own custom hash function for well known types
+           // to avoid a function call
+            switch (TYPE(hash_me)) {
+              // ltodo does this help?
+              // if so more types?
+              case T_FIXNUM:              
+                return hash_me;
+            }           
+           
             VALUE hval = rb_funcall(hash_me, id_hash, 0);
             retry:
             switch (TYPE(hval)) {
