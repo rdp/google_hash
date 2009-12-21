@@ -38,16 +38,16 @@ int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT",
 
 ruby_value =  {:value_type => "VALUE"}
 
-int_to_ruby = int_key.merge(ruby_value)
 
 ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :unreachable_key => "NULL"}
 
+int_to_ruby = int_key.merge(ruby_value)
 ruby_to_ruby = ruby_key.merge(ruby_value)
 
 init_funcs = []
 
 for options in [int_to_ruby, ruby_to_ruby] do
- for type, setup_code in {'sparse' => nil, 'dense' => 'set_empty_key(1<<31);' } do
+ for type in ['sparse', 'dense'] do
   raise unless options[:value_type] && options[:key_type]
   
   # create local variables so that the template can look cleaner

@@ -1,6 +1,7 @@
 require './google_hash'
 require 'benchmark'
 require 'hitimes'
+
 def measure
  Hitimes::Interval.measure { yield }
 end
@@ -8,8 +9,10 @@ end
 def go num
   puts
   puts num
+  # get all existing
+  all =  Object.constants.grep(/Goog/).reject{|n| n == :GoogleHash}.map{|n| eval n} + [Hash]
 
-  for name in [GoogleHash, GoogleHashSparseIntToRuby, GoogleHashDenseIntToRuby, Hash] do
+  for name in all do
     GC.start
     subject = name.new
     puts name, measure { num.times {|n| subject[n] = 4}}.to_s + "   (populate)"
@@ -19,5 +22,5 @@ def go num
   end
 end
 
-num = 500000
+num = 500_000
 go num if $0 ==__FILE__

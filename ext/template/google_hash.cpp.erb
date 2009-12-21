@@ -31,9 +31,11 @@ struct eqrb
 {
   bool operator()(const VALUE s1, const VALUE s2) const
   {
+    /*
     if(s1 == s2) {
       return true;
     }
+    */
     
     // now from object.c's rb_eql lookup 0.278 -> 0.26 
 
