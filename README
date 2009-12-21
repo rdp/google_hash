@@ -43,6 +43,8 @@ If you have a desired use case let me know and I might well be able to code it u
 
 This is meant to be one more tool in the rubyists toolbelt when trying to optimize speed-wise, and plans to expand to more types, but at least with this release it has a #each method.
 
+Note that sparse maps can be saved to disk--ask if you want/need this functionality.
+
 Enjoy.
 -r
 

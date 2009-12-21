@@ -49,7 +49,7 @@ describe "google_hash" do
   end
 
   it "should work with value => value" do
-    a = GoogleHashRubyToRuby.new
+    a = GoogleHashSparseRubyToRuby.new
     a['abc'] = 'def'
     a['abc'].should == 'def'
   end

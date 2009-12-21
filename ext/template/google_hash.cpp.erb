@@ -105,21 +105,26 @@ rb_mri_hash_new(VALUE freshly_created) {
 
 
 static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
-  if(!(TYPE(set_this) == T_FIXNUM)) {
-     rb_raise(rb_eTypeError, "not valid value");
-  }
+  <% if assert_key_type %>
+    if(!(TYPE(set_this) == <%= assert_key_type %>)) {
+       rb_raise(rb_eTypeError, "not valid value #{assert_key_type}");
+    }
+  <% end %>
   RCallback* cbs = GetCallbackStruct(cb);
   (*cbs->hash_map)[ <%= convert_keys_from_ruby %>(set_this)] = to_this;  
   return to_this; // ltodo test that it returns value...
 }
 
 static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
-  if(!(TYPE(get_this) == T_FIXNUM)) {
-     rb_raise(rb_eTypeError, "not valid value");
-  }
+  // TODO optionally not assert [?]
+  <% if assert_key_type %>
+    if(!(TYPE(get_this) == <%= assert_key_type %>)) {
+       rb_raise(rb_eTypeError, "not valid value #{assert_key_type}");
+    }
+  <% end %>
   RCallback* cbs = GetCallbackStruct(cb);
   VALUE out = (*cbs->hash_map)[ <%= convert_keys_from_ruby %>(get_this)];
-  if(out == NULL) { // null pointer means "wasn't found"
+  if(out == NULL) { // not found...hmm...
     return Qnil;
   }
   return out;

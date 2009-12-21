@@ -28,24 +28,28 @@ end
 
 # my goal is...ruby friendly hashers
 
-int_to_ruby =  {:convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :value_type => "VALUE", :english_value_type => "ruby"}
+
+
+
+int_to_ruby =  {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :value_type => "VALUE", :english_value_type => "ruby"}
+
 ruby_to_ruby = {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :value_type => "VALUE"}
 
 
 init_funcs = []
 
-
-for options in [int_to_ruby] do
+for options in [int_to_ruby, ruby_to_ruby] do
  for type, setup_code in {'sparse' => nil, 'dense' => 'set_empty_key(1<<31);' } do
 
   # create local variables so that the template can look cleaner
-  setup_code = options[:setup_code]
   convert_keys_from_ruby = options[:convert_keys_from_ruby]
   convert_keys_to_ruby = options[:convert_keys_to_ruby]
   key_type = options[:key_type]
   value_type = options[:value_type]
   english_key_type = options[:key_type] == 'VALUE' ? 'ruby' : options[:key_type]
   english_value_type = options[:value_type] == 'VALUE' ? 'ruby' : options[:value_type]
+  
+  assert_key_type = options[:assert_key_type]
   
   if options[:key_type] == 'VALUE'
     extra_hash_params =  ", hashrb, eqrb"  # use these methods for comparison
