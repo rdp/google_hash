@@ -28,20 +28,28 @@ end
 
 # my goal is...ruby friendly hashers
 
+if OS.bits == 32
+  unreachable_int = 31
+else
+    unreachable_int = 63
+end
 
+int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :unreachable_key => "1<<#{unreachable_int}"}
 
+ruby_value =  {:value_type => "VALUE"}
 
-int_to_ruby =  {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :value_type => "VALUE", :english_value_type => "ruby", :unreachable_key => '1<<31'}
+int_to_ruby = int_key.merge(ruby_value)
 
-# TODO 64 bit?
+ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :unreachable_key => "NULL"}
 
-ruby_to_ruby = {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :value_type => "VALUE", :unreachable_key => "NULL"}
+ruby_to_ruby = ruby_key.merge(ruby_value)
 
 init_funcs = []
 
 for options in [int_to_ruby, ruby_to_ruby] do
  for type, setup_code in {'sparse' => nil, 'dense' => 'set_empty_key(1<<31);' } do
-
+  raise unless options[:value_type] && options[:key_type]
+  
   # create local variables so that the template can look cleaner
   unreachable_key = options[:unreachable_key]
   convert_keys_from_ruby = options[:convert_keys_from_ruby]
