@@ -5,7 +5,7 @@ require 'spec/autorun'
 describe "google_hash" do
 
   before do
-   @subject = GoogleHashSparse.new
+   @subject = GoogleHashSparseIntToRuby.new
   end
 
   it "should be instantiable" do

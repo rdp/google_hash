@@ -154,7 +154,7 @@ static VALUE rb_ghash_keys(VALUE cb) {
 }
 
 void init_<%= type %>() {
-    rb_cGoogleHashLocal = rb_define_class("GoogleHash<%= type.capitalize %>", rb_cObject);
+    rb_cGoogleHashLocal = rb_define_class("GoogleHash<%= type.capitalize %><%= key_type == 'VALUE' ? 'Ruby' : key_type.capitalize %>To<%= value_type == 'VALUE' ? 'Ruby' : value_type.capitalize %>", rb_cObject);
 
     rb_define_alloc_func(rb_cGoogleHashLocal, callback_alloc); // I guess it calls this for us, pre initialize... 
 
