@@ -1,3 +1,4 @@
+require 'rubygems' if RUBY_VERSION < '1.9'
 require 'sane'
 require_rel '../ext/google_hash.so'
 require 'spec/autorun'

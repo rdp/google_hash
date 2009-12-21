@@ -68,8 +68,10 @@ struct hashrb
               case T_SYMBOL:
                // ltodo
                 return hash_me;
+            <% unless RUBY_VERSION < '1.9' %>
               case T_BIGNUM:
 	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hash_me)))[0]); // its first digit...I'm thinkin'
+            <% end %>
 	            case T_STRING:
 	             //return H(StringValueCStr(hash_me)); // populate/lookup 0.26 -> 0.23 [core is 0.16 somehow]
 	             // perhaps they cache?
@@ -82,9 +84,10 @@ struct hashrb
             switch (TYPE(hval)) {
               case T_FIXNUM:
 	              return hval;
-
+<% unless RUBY_VERSION < '1.9' %>
               case T_BIGNUM:
 	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hval)))[0]);
+<% end %>
 
               default:
 	              hval = rb_to_int(hval);
