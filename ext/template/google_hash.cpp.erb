@@ -1,3 +1,5 @@
+<% extra_hash_params = ", hashrb, eqrb" if key_type == 'VALUE' %>
+
 #include <iostream>
 #include <google/<%= type %>_hash_map>
 #include <ruby.h>
@@ -37,7 +39,6 @@ struct eqrb
   }
 };
 
-
 struct hashrb
 {
     size_t operator()(const VALUE hash_me) const
@@ -60,14 +61,14 @@ struct eqint
 
 
 typedef struct {
-  <%= type %>_hash_map< <%= key_type %>, <%= value_type %> > *hash_map;
+  <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> > *hash_map;
 } RCallback;
 
 
 static VALUE rb_cGoogleHashLocal;
 
 static void mark_hash_map_values(RCallback *incoming) {
-  for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+  for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
      rb_gc_mark(it->second);
   }
 }
@@ -84,7 +85,7 @@ callback_alloc( VALUE klass )
     VALUE cb;
     RCallback* cbs;
     cb = Data_Make_Struct(klass, RCallback, mark_hash_map_values, free_hash_callback, cbs);
-    cbs->hash_map = new <%= type %>_hash_map< <%= key_type %>, <%= value_type %> >();
+    cbs->hash_map = new <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >();
     <% if setup_code %>
 	     cbs->hash_map-><%= setup_code %>;
     <% end %> 
@@ -128,7 +129,7 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
 
 static VALUE rb_ghash_each(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
-    for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+    for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
       rb_yield_values(2, <%= convert_keys_to_ruby %>(it->first), it->second);
     }
     return cb;
@@ -138,7 +139,7 @@ static VALUE rb_ghash_each(VALUE cb) {
 static VALUE rb_ghash_values(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
     VALUE out = rb_ary_new2(incoming->hash_map->size());
-     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %>  >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
       rb_ary_push(out, it->second);
     } 
     return out;
@@ -147,7 +148,7 @@ static VALUE rb_ghash_values(VALUE cb) {
 static VALUE rb_ghash_keys(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
     VALUE out = rb_ary_new2(incoming->hash_map->size());
-     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
       rb_ary_push(out, <%= convert_keys_to_ruby %>(it->first));
     } 
     return out;

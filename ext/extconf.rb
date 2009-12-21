@@ -31,6 +31,7 @@ end
 int_to_ruby =  {:convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :value_type => "VALUE"}
 
 
+
 for options in [int_to_ruby] do
   for type, setup_code in {'sparse' => nil, 'dense' => 'set_empty_key(1<<31);' } do
 
