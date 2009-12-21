@@ -25,6 +25,7 @@ Usage:
 
 a = GoogleHashDenseRubyToRuby.new # or GoogleHash.new
 b = GoogleHashDenseLongToRuby.new # :int => Ruby
+b = GoogleHashSparseLongToRuby.new # :int => Ruby
 
 a[3] = 4
 b[4] = 'abc'
@@ -34,6 +35,10 @@ a.each{|k, v| ... }
 
 a.keys => Array
 a.values => Array
+
+To learn if sparse or dense is right for you, check their documentation: 
+
+http://google-sparsehash.googlecode.com/svn/trunk/doc/index.html
 
 Installation:
 

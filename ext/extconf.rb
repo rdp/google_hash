@@ -31,7 +31,7 @@ end
 if OS.bits == 32
   unreachable_int = 31
 else
-    unreachable_int = 63
+  unreachable_int = 63
 end
 
 ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :unreachable_key => "current_instance"} # TODO NULL is false here?
