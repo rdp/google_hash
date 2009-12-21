@@ -47,6 +47,22 @@ describe "google_hash" do
   it "should not leak" do
     pending "testing if it leaks"
   end
+  
+  def populate(a)
+    a['abc'] = 'def'
+    a['bbc'] = 'yoyo'
+  end
+  
+  it "should not die with GC" do
+    a = GoogleHashSparseRubyToRuby.new
+    populate(a)
+    a['abc'].should == 'def'
+    a['bbc'].should == 'yoyo'
+    GC.start
+    a.keys.each{|k| k}
+    a.values.each{|v| v}
+  end
+    
 
   it "should work with value => value" do
     a = GoogleHashSparseRubyToRuby.new

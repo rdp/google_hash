@@ -23,19 +23,21 @@ GoogleHashSparse
 
 Usage:
 
-a = GoogleHashSparse.new
-b = GoogleHashDense.new # or just GoogleHash.new
+a = GoogleHashDenseRubyToRuby.new # or GoogleHash.new
+b = GoogleHashDenseIntToRuby.new # :int => Ruby
 
 a[3] = 4
 b[4] = 'abc'
-a['abc'.hash] = 'some complex object' 
-# it only accepts int's currently--only because I'm too lazy to add more types yet.
-a.each{|k, v| }
+b['abc'.hash] = 'some complex object' 
+
+a.each{|k, v| ... }
+
+a.keys => Array
+a.values => Array
 
 Installation:
 
 gem install google_hash (if on doze, you'll need the devkit installed)
-
 
 Both classes are currently more space efficient than a hash, because they store keys as "native" ints, so the keys no longer affect GC time, as well as only use 4 bytes instead of 20 (or 8 instead of 40, on 64 bit).  This should release stress on the GC, and both GoogleHashDense and GoogleHashSparse do this.  In terms of total memory usage GoogleHashDense uses more, and is more speedy, GoogleHashSparse uses less, and is much more memory efficient (2 bits per entry, or so I'm told).
 

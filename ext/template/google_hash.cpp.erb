@@ -23,6 +23,9 @@ struct eqstr
   }
 };
 
+   
+
+static ID id_eql, id_hash;
 
 struct eqrb
 {
@@ -31,9 +34,10 @@ struct eqrb
     if(s1 == s2) {
       return true;
     }
-    return rb_eql(s1, s2); // this is eql? on them, basically
-    // return RTEST(rb_funcall(obj1, id_eql, 1, obj2));
-    // ugh
+    
+    // now from object.c's rb_eql lookup 0.278 -> 0.26 
+
+    return RTEST(rb_funcall(s1, id_eql, 1, s2));
   }
 };
 
@@ -41,7 +45,22 @@ struct hashrb
 {
     size_t operator()(const VALUE hash_me) const
       {
-        return rb_hash(hash_me);
+           // stolen from hash.c populate -> 0.64 0.625
+        
+            VALUE hval = rb_funcall(hash_me, id_hash, 0);
+            retry:
+            switch (TYPE(hval)) {
+              case T_FIXNUM:
+	            return hval;
+
+              case T_BIGNUM:
+	            return LONG2FIX(((long*)(RBIGNUM_DIGITS(hval)))[0]);
+
+              default:
+	              hval = rb_to_int(hval);
+	              goto retry;
+        }  
+  
       }
 };
 
@@ -67,7 +86,14 @@ static VALUE rb_cGoogleHashLocal;
 
 static void mark_hash_map_values(RCallback *incoming) {
   for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
-     rb_gc_mark(it->second);
+     
+     <% if value_type == 'VALUE' %>
+       rb_gc_mark(it->second);
+     <% end %>
+     
+     <% if key_type == 'VALUE' %>
+       rb_gc_mark(it->first);
+     <% end %>
   }
 }
 
@@ -167,7 +193,8 @@ void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
     rb_define_method(rb_cGoogleHashLocal, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0);
     rb_define_method(rb_cGoogleHashLocal, "values", RUBY_METHOD_FUNC(rb_ghash_values), 0); 
     rb_define_method(rb_cGoogleHashLocal, "keys", RUBY_METHOD_FUNC(rb_ghash_keys), 0); 
-
+    id_eql = rb_intern("eql?");
+    id_hash = rb_intern("hash");
   } 
 }
 
