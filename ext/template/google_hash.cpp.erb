@@ -1,5 +1,3 @@
-<% extra_hash_params = ", hashrb, eqrb" if key_type == 'VALUE' %>
-
 #include <iostream>
 #include <google/<%= type %>_hash_map>
 #include <ruby.h>
@@ -132,8 +130,7 @@ static VALUE rb_ghash_each(VALUE cb) {
     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
       rb_yield_values(2, <%= convert_keys_to_ruby %>(it->first), it->second);
     }
-    return cb;
-  
+    return cb;  
 }
   
 static VALUE rb_ghash_values(VALUE cb) {
@@ -154,8 +151,8 @@ static VALUE rb_ghash_keys(VALUE cb) {
     return out;
 }
 
-void init_<%= type %>() {
-    rb_cGoogleHashLocal = rb_define_class("GoogleHash<%= type.capitalize %><%= key_type == 'VALUE' ? 'Ruby' : key_type.capitalize %>To<%= value_type == 'VALUE' ? 'Ruby' : value_type.capitalize %>", rb_cObject);
+void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
+    rb_cGoogleHashLocal = rb_define_class("GoogleHash<%= type.capitalize %><%= english_key_type.capitalize %>To<%= english_value_type.capitalize %>", rb_cObject);
 
     rb_define_alloc_func(rb_cGoogleHashLocal, callback_alloc); // I guess it calls this for us, pre initialize... 
 
