@@ -84,8 +84,8 @@ callback_alloc( VALUE klass )
     RCallback* cbs;
     cb = Data_Make_Struct(klass, RCallback, mark_hash_map_values, free_hash_callback, cbs);
     cbs->hash_map = new <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >();
-    <% if setup_code %>
-	     cbs->hash_map-><%= setup_code %>;
+    <% if unreachable_key && type == 'dense' %>
+       cbs->hash_map->set_empty_key(<%= unreachable_key %>);
     <% end %> 
     return cb;
 }

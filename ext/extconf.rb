@@ -31,7 +31,9 @@ end
 
 
 
-int_to_ruby =  {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :value_type => "VALUE", :english_value_type => "ruby"}
+int_to_ruby =  {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :value_type => "VALUE", :english_value_type => "ruby", :unreachable_key => '1<<31'}
+
+# TODO 64 bit?
 
 ruby_to_ruby = {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :value_type => "VALUE"}
 
@@ -42,6 +44,7 @@ for options in [int_to_ruby, ruby_to_ruby] do
  for type, setup_code in {'sparse' => nil, 'dense' => 'set_empty_key(1<<31);' } do
 
   # create local variables so that the template can look cleaner
+  unreachable_key = options[:unreachable_key]
   convert_keys_from_ruby = options[:convert_keys_from_ruby]
   convert_keys_to_ruby = options[:convert_keys_to_ruby]
   key_type = options[:key_type]
