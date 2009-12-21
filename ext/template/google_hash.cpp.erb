@@ -137,14 +137,15 @@ static VALUE callback_alloc _((VALUE)); // what does this line do?
 static VALUE
 callback_alloc( VALUE klass )
 {
-    VALUE cb;
     RCallback* cbs;
-    cb = Data_Make_Struct(klass, RCallback, mark_hash_map_values, free_hash_callback, cbs);
+    VALUE current_instance = Data_Make_Struct(klass, RCallback, mark_hash_map_values, free_hash_callback, cbs);
+    
     cbs->hash_map = new <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >();
     <% if unreachable_key && type == 'dense' %>
        cbs->hash_map->set_empty_key(<%= unreachable_key %>);
     <% end %> 
-    return cb;
+    
+    return current_instance;
 }
 
 
@@ -180,11 +181,14 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
     }
   <% end %>
   RCallback* cbs = GetCallbackStruct(cb);
-  VALUE out = (*cbs->hash_map)[ <%= convert_keys_from_ruby %>(get_this)];
-  if(out == NULL) { // not found...hmm...
+  
+  <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator out = cbs->hash_map->find(<%= convert_keys_from_ruby %>(get_this));
+  
+  if(out == cbs->hash_map->end()) { // not found...hmm...is this False, though?
     return Qnil;
+  } else {
+    return <%= convert_values_to_ruby %>(out->second);
   }
-  return <%= convert_values_to_ruby %>(out);
 }
 
 static VALUE rb_ghash_each(VALUE cb) {

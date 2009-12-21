@@ -34,14 +34,18 @@ else
     unreachable_int = 63
 end
 
+ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :unreachable_key => "current_instance"} # TODO NULL is false here?
 long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG", 
-  :convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "1<<#{unreachable_int}"}
-  
-# int_key would be pretty straight forward...
+  :convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "1<<#{unreachable_int}"}  
+int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT", 
+  :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :unreachable_key => "1<<#{unreachable_int}"}
+
 
 ruby_value =  {:value_type => "VALUE"}
+long_value = {:assert_value_type => 'T_FIXNUM', :convert_values_from_ruby => "FIX2LONG", 
+  :convert_values_to_ruby => "LONG2FIX", :value_type => "long"}
 
-ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :unreachable_key => "NULL"}
+
 
 int_to_ruby = long_key.merge(ruby_value)
 ruby_to_ruby = ruby_key.merge(ruby_value)
