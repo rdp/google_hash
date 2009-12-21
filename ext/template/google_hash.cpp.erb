@@ -64,7 +64,7 @@ typedef struct {
 } RCallback;
 
 
-static VALUE rb_cGoogleHash<%= type %>;
+static VALUE rb_cGoogleHashLocal;
 
 static void mark_hash_map_values(RCallback *incoming) {
   for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
@@ -128,7 +128,6 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
 
 static VALUE rb_ghash_each(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
-    // LODO assert block given
     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
       rb_yield_values(2, <%= convert_keys_to_ruby %>(it->first), it->second);
     }
@@ -155,16 +154,16 @@ static VALUE rb_ghash_keys(VALUE cb) {
 }
 
 void init_<%= type %>() {
-    rb_cGoogleHash<%= type %> = rb_define_class("GoogleHash<%= type.capitalize %>", rb_cObject);
+    rb_cGoogleHashLocal = rb_define_class("GoogleHash<%= type.capitalize %>", rb_cObject);
 
-    rb_define_alloc_func(rb_cGoogleHash<%= type %>, callback_alloc); // I guess it calls this for us, pre initialize... 
+    rb_define_alloc_func(rb_cGoogleHashLocal, callback_alloc); // I guess it calls this for us, pre initialize... 
 
-    rb_define_method(rb_cGoogleHash<%= type %>, "initialize", RUBY_METHOD_FUNC(rb_mri_hash_new), 0); 
-    rb_define_method(rb_cGoogleHash<%= type %>, "[]=", RUBY_METHOD_FUNC(rb_ghash_set), 2); 
-    rb_define_method(rb_cGoogleHash<%= type %>, "[]", RUBY_METHOD_FUNC(rb_ghash_get), 1); 
-    rb_define_method(rb_cGoogleHash<%= type %>, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0);
-    rb_define_method(rb_cGoogleHash<%= type %>, "values", RUBY_METHOD_FUNC(rb_ghash_values), 0); 
-    rb_define_method(rb_cGoogleHash<%= type %>, "keys", RUBY_METHOD_FUNC(rb_ghash_keys), 0); 
+    rb_define_method(rb_cGoogleHashLocal, "initialize", RUBY_METHOD_FUNC(rb_mri_hash_new), 0); 
+    rb_define_method(rb_cGoogleHashLocal, "[]=", RUBY_METHOD_FUNC(rb_ghash_set), 2); 
+    rb_define_method(rb_cGoogleHashLocal, "[]", RUBY_METHOD_FUNC(rb_ghash_get), 1); 
+    rb_define_method(rb_cGoogleHashLocal, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0);
+    rb_define_method(rb_cGoogleHashLocal, "values", RUBY_METHOD_FUNC(rb_ghash_values), 0); 
+    rb_define_method(rb_cGoogleHashLocal, "keys", RUBY_METHOD_FUNC(rb_ghash_keys), 0); 
 
   } 
 }
