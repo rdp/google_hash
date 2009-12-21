@@ -5,7 +5,7 @@ require 'spec/autorun'
 describe "google_hash" do
 
   before do
-   @subject = GoogleHashSparseIntToRuby.new
+   @subject = GoogleHashSparseLongToRuby.new
   end
 
   it "should be instantiable" do
@@ -115,7 +115,31 @@ describe "google_hash" do
   it "should have sets"
   it "should have Set#each"
 
-  it "Set should have #combination calls"
+  it "Set should have #combination calls" do
+    @subject[33] = 34
+    @subject[36] = 37
+    @subject.keys_combination_2{|a, b|
+      assert a == 33
+      assert b == 36
+    }
+    
+  end
+  
+  it "Set should have #combination calls with more than one" do
+    @subject[1] = 34
+    @subject[2] = 37
+    @subject[3]= 39
+    sum = 0
+    count = 0
+    @subject.keys_combination_2{|a, b|
+      sum += a
+      sum += b
+      count += 1
+    }
+    assert count == 3
+    assert sum == 1 + 2 + 1 + 3 + 2 + 3
+  end
+
 
   it "should have an Array for values, keys" do
     @subject[33] = 34

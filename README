@@ -24,7 +24,7 @@ GoogleHashSparse
 Usage:
 
 a = GoogleHashDenseRubyToRuby.new # or GoogleHash.new
-b = GoogleHashDenseIntToRuby.new # :int => Ruby
+b = GoogleHashDenseLongToRuby.new # :int => Ruby
 
 a[3] = 4
 b[4] = 'abc'
@@ -43,6 +43,8 @@ Both classes are currently more space efficient than a hash, because they store 
 
 If you have a desired use case let me know and I might well be able to code it up for you.
 
+ex: currently it uses longs internally instead of ints--if you want ints or chars or what not, let me know.
+
 This is meant to be one more tool in the rubyists toolbelt when trying to optimize speed-wise, and plans to expand to more types, but at least with this release it has a #each method.
 
 Note that sparse maps can be saved to disk--ask if you want/need this functionality.
@@ -52,4 +54,4 @@ Enjoy.
 
 [1] http://code.google.com/p/google-sparsehash
 
-If you want to see the code/hack on it, run extconf.rb within the ext directory, to create the code it actually uses from a template
+If you want to see the code/hack on it, run extconf.rb within the ext directory, to create the code it actually uses (from a template).

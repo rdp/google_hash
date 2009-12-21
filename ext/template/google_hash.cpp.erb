@@ -33,8 +33,9 @@ struct eqrb
 {
   bool operator()(const VALUE s1, const VALUE s2) const
   {
-    // LTODO if the key is an int, this slows down lookup...
-    // or does it?
+    // speeds up populate int 18/11
+    // slows down string 21/22
+    // ltodo
     if(s1 == s2) {
       return true;
     }
@@ -48,7 +49,7 @@ struct eqrb
 
 struct hashrb
 {
-    size_t operator()(const VALUE hash_me) const
+    size_t operator()(VALUE hash_me) const
       {
            // stolen from hash.c populate -> 0.64 0.625
         
@@ -56,7 +57,9 @@ struct hashrb
            // use our own custom hash function for well known types
            // to avoid a function call
            // this speeds up ints 29/44
-           // and slows down strings 47/44 populating (dense)
+           // and speeds up string 26/22
+           // though I suppose we could 
+           
             switch (TYPE(hash_me)) {
               // ltodo does this help?
               // if so more types?
@@ -66,9 +69,11 @@ struct hashrb
                // ltodo
                 return hash_me;
               case T_BIGNUM:
-	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hash_me)))[0]);
-	            //case T_STRING:
-	            // return H(StringValueCStr(hash_me));
+	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hash_me)))[0]); // its first digit...I'm thinkin'
+	            case T_STRING:
+	             //return H(StringValueCStr(hash_me)); // populate/lookup 0.26 -> 0.23 [core is 0.16 somehow]
+	             // perhaps they cache?
+	             return H(RSTRING_PTR(hash_me)); // 0.23 -> -.22
 	          }        
            
             VALUE hval = rb_funcall(hash_me, id_hash, 0);
@@ -209,6 +214,24 @@ static VALUE rb_ghash_keys(VALUE cb) {
 }
 
 
+// only yield
+
+static VALUE rb_ghash_combination_2(VALUE cb) {
+    RCallback* incoming = GetCallbackStruct(cb);
+    
+     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+       
+       <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator next = it;
+       ++next; // advance it
+       
+       while(next != incoming->hash_map->end()) {
+         rb_yield_values(2, <%= convert_keys_to_ruby %>(it->first), <%= convert_keys_to_ruby %>(next->first));
+         ++next;
+       }
+    }
+    return cb;
+}
+
 
 void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
   
@@ -223,6 +246,7 @@ void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
     rb_define_method(rb_cGoogleHashLocal, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0);
     rb_define_method(rb_cGoogleHashLocal, "values", RUBY_METHOD_FUNC(rb_ghash_values), 0); 
     rb_define_method(rb_cGoogleHashLocal, "keys", RUBY_METHOD_FUNC(rb_ghash_keys), 0); 
+    rb_define_method(rb_cGoogleHashLocal, "keys_combination_2", RUBY_METHOD_FUNC(rb_ghash_combination_2), 0); 
     id_eql = rb_intern("eql?");
     id_hash = rb_intern("hash");
   } 

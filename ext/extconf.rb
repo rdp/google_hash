@@ -2,7 +2,7 @@ require 'mkmf'
 require 'erb'
 require 'rubygems'
 require 'sane'
-
+puts 'got', xsystem("ls")
 # build google's lib locally...
 
 dir = Dir.pwd
@@ -34,14 +34,16 @@ else
     unreachable_int = 63
 end
 
-int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :unreachable_key => "1<<#{unreachable_int}"}
+long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG", 
+  :convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "1<<#{unreachable_int}"}
+  
+# int_key would be pretty straight forward...
 
 ruby_value =  {:value_type => "VALUE"}
 
-
 ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :unreachable_key => "NULL"}
 
-int_to_ruby = int_key.merge(ruby_value)
+int_to_ruby = long_key.merge(ruby_value)
 ruby_to_ruby = ruby_key.merge(ruby_value)
 
 init_funcs = []
