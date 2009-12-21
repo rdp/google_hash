@@ -26,11 +26,14 @@ end
 # ltodo if I am using longs, this 31 needs to be a 63 on 64 bit machines...
 # if I ever use longs :)
 
-int_type = {:convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :value_type => "VALUE"}
+# my goal is...ruby friendly hashers
+
+int_to_ruby =  {:convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :value_type => "VALUE"}
 
 
-for type, options in {'sparse' => int_type, 'dense' => int_type.merge(:setup_code => 'set_empty_key(1<<31);') } do
-  
+for options in [int_to_ruby] do
+  for type, setup_code in {'sparse' => nil, 'dense' => 'set_empty_key(1<<31);' } do
+
   # create local variables so that the template can look cleaner
   setup_code = options[:setup_code]
   convert_keys_from_ruby = options[:convert_keys_from_ruby]
@@ -40,6 +43,7 @@ for type, options in {'sparse' => int_type, 'dense' => int_type.merge(:setup_cod
   
   template = ERB.new(File.read('template/google_hash.cpp.erb'))  
   File.write(type.to_s + '.cpp', template.result(binding))
+end
 end
 
 create_makefile('google_hash')

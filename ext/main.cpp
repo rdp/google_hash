@@ -7,8 +7,9 @@ int main();
 void Init_google_hash() {
   init_dense();
   init_sparse();
-    main();
+  main();
   rb_eval_string("GoogleHash = GoogleHashDenseIntToRuby");
-}
+ }
+ 
 }
 

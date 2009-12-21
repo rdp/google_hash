@@ -49,7 +49,7 @@ describe "google_hash" do
   end
 
   it "should work with value => value" do
-    a = GoogleHashRuby.new
+    a = GoogleHashRubyToRuby.new
     a['abc'] = 'def'
     a['abc'].should == 'def'
   end
@@ -80,8 +80,6 @@ describe "google_hash" do
    @subject[0] = 'abc'
    @subject[0].should == 'abc'
   end
-
-  
 
   it "should do BigNums" do
     pending "if necessary"
