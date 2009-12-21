@@ -1,4 +1,5 @@
 require 'jeweler'
+require 'gemcutter'
 Jeweler::Tasks.new do |gemspec|
     gemspec.name = "google_hash"
     gemspec.summary = "Ruby wrappers to the google hash library"

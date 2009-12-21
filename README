@@ -1,21 +1,57 @@
-This is a ruby gem that wraps google's "sparse" and "dense" hashes.
+Pleased to announce the initial release of the "google_hash" gem.
 
-Current usage:
-
-a = GoogleHashSmall.new
-a[3] = 'abc' # only accept integers for keys currently.
-
-The dense hash tends to be a bit faster than ruby's normal hash, and the sparse hash tends to use less RAM.
-
-Still in pre-alpha.
-
-The goal is basically a faster hash, but also one that is more space efficient than ruby's default.
+Its goal. To boldly be faster than any hash hash before (cue star trek TNG theme).
 
 
-ex (end goal):
+The goal is basically a better hash, either one that is faster or more space efficient than ruby's default.  To attempt this we wrap the google sparse and dense hashes [1].
 
-Google::Hash::Dense(:int => :int) # stores them away as real ints, instead of ruby value's, thus they don't cause a hit to garbage collection.
+Speed results (populating 500000 integers):
 
-Google::Hash::Sparse(:symbol => :string) # stores away its own separate copies of the strings, stores the symbols as ints, thus saving tons of space and also both objects don't have to hit garbage collection.  Saves on speed.
+1.9.1p376 (mingw):
 
-If you have a desired use case let me know and I might well code it up for you.
+Hash (Ruby default)
+0.359375 (populate)
+1.1875   (each)
+
+GoogleHashDense
+0.1875   (populate)
+0.078125 (each)
+
+GoogleHashSparse
+0.53125  (populate)
+0.078125 (each)
+
+Usage:
+
+a = GoogleHashDenseRubyToRuby.new # or GoogleHash.new
+b = GoogleHashDenseLongToRuby.new # :int => Ruby
+
+a[3] = 4
+b[4] = 'abc'
+b['abc'.hash] = 'some complex object' 
+
+a.each{|k, v| ... }
+
+a.keys => Array
+a.values => Array
+
+Installation:
+
+gem install google_hash (if on doze, you'll need the devkit installed)
+
+Both classes are currently more space efficient than a hash, because they store keys as "native" ints, so the keys no longer affect GC time, as well as only use 4 bytes instead of 20 (or 8 instead of 40, on 64 bit).  This should release stress on the GC, and both GoogleHashDense and GoogleHashSparse do this.  In terms of total memory usage GoogleHashDense uses more, and is more speedy, GoogleHashSparse uses less, and is much more memory efficient (2 bits per entry, or so I'm told).
+
+If you have a desired use case let me know and I might well be able to code it up for you.
+
+ex: currently it uses longs internally instead of ints--if you want ints or chars or what not, let me know.
+
+This is meant to be one more tool in the rubyists toolbelt when trying to optimize speed-wise, and plans to expand to more types, but at least with this release it has a #each method.
+
+Note that sparse maps can be saved to disk--ask if you want/need this functionality.
+
+Enjoy.
+-r
+
+[1] http://code.google.com/p/google-sparsehash
+
+If you want to see the code/hack on it, run extconf.rb within the ext directory, to create the code it actually uses (from a template).

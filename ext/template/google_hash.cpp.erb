@@ -1,0 +1,258 @@
+#include <iostream>
+#include <google/<%= type %>_hash_map>
+#include <ruby.h>
+
+// much code stolen shamelessly from lourens' cb gem
+
+using google::<%= type %>_hash_map;      // namespace where class lives by default
+using std::cout;
+using std::endl;
+<% if OS.linux? %>
+  #include <ext/hash_set>
+<% end %>
+using __gnu_cxx::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
+extern "C" {
+
+// some helpers
+
+struct eqstr
+{
+  bool operator()(const char* s1, const char* s2) const
+  {
+    return (s1 == s2) || (s1 && s2 && strcmp(s1, s2) == 0);
+  }
+};
+
+static hash<const char*> H;
+
+// hashing it is like hash<const char*>
+
+static ID id_eql, id_hash;
+
+struct eqrb
+{
+  bool operator()(const VALUE s1, const VALUE s2) const
+  {
+    // speeds up populate int 18/11
+    // slows down string 21/22
+    // ltodo
+    if(s1 == s2) {
+      return true;
+    }
+    
+    // this line from object.c's rb_eql 
+    // lookup 0.278 -> 0.26 
+
+    return RTEST(rb_funcall(s1, id_eql, 1, s2));
+  }
+};
+
+struct hashrb
+{
+    size_t operator()(VALUE hash_me) const
+      {
+           // stolen from hash.c populate -> 0.64 0.625
+        
+           // hmm
+           // use our own custom hash function for well known types
+           // to avoid a function call
+           // this speeds up ints 29/44
+           // and speeds up string 26/22
+           // though I suppose we could 
+           
+            switch (TYPE(hash_me)) {
+              // ltodo does this help?
+              // if so more types?
+              case T_FIXNUM:              
+              case T_FLOAT:
+              case T_SYMBOL:
+               // ltodo
+                return hash_me;
+              case T_BIGNUM:
+	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hash_me)))[0]); // its first digit...I'm thinkin'
+	            case T_STRING:
+	             //return H(StringValueCStr(hash_me)); // populate/lookup 0.26 -> 0.23 [core is 0.16 somehow]
+	             // perhaps they cache?
+	             return H(RSTRING_PTR(hash_me)); // 0.23 -> -.22
+	          }        
+           
+            VALUE hval = rb_funcall(hash_me, id_hash, 0);
+            
+            retry:
+            switch (TYPE(hval)) {
+              case T_FIXNUM:
+	              return hval;
+
+              case T_BIGNUM:
+	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hval)))[0]);
+
+              default:
+	              hval = rb_to_int(hval);
+	              goto retry;
+        }  
+  
+      }
+};
+
+
+
+/* we end up not needing this...or at least not using it, I don't know if it would be faster than using the default or not
+struct eqint
+{
+  inline bool operator()(int s1, int s2) const
+  {
+    return s1 == s2;
+  }
+};
+*/
+
+
+typedef struct {
+  <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> > *hash_map;
+} RCallback;
+
+
+static void mark_hash_map_values(RCallback *incoming) {
+  <% if value_type == 'VALUE' || key_type == 'VALUE' %>
+
+    for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+     
+     <% if value_type == 'VALUE' %>
+       rb_gc_mark(it->second);
+     <% end %>
+     
+     <% if key_type == 'VALUE' %>
+       rb_gc_mark(it->first);
+     <% end %>
+    }
+  <% end %>
+}
+
+static void free_hash_callback(RCallback* cb) {
+  //  delete cb->hash_map;
+}
+
+static VALUE callback_alloc _((VALUE)); // what does this line do?
+
+static VALUE
+callback_alloc( VALUE klass )
+{
+    RCallback* cbs;
+    VALUE current_instance = Data_Make_Struct(klass, RCallback, mark_hash_map_values, free_hash_callback, cbs);
+    
+    cbs->hash_map = new <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >();
+    <% if unreachable_key && type == 'dense' %>
+       cbs->hash_map->set_empty_key(<%= unreachable_key %>);
+    <% end %> 
+    
+    return current_instance;
+}
+
+
+#define GetCallbackStruct(obj)	(Check_Type(obj, T_DATA), (RCallback*)DATA_PTR(obj))
+
+
+static VALUE
+rb_mri_hash_new(VALUE freshly_created) {
+
+  // we don't actually have anything special to do here...
+  // unless someone subclassed us or something [?]
+  // ltodo test
+  return freshly_created;
+}
+
+
+static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
+  <% if assert_key_type %>
+    if(!(TYPE(set_this) == <%= assert_key_type %>)) {
+       rb_raise(rb_eTypeError, "not valid value #{assert_key_type}");
+    }
+  <% end %>
+  RCallback* cbs = GetCallbackStruct(cb);
+  (*cbs->hash_map)[ <%= convert_keys_from_ruby %>(set_this)] = <%= convert_values_from_ruby %>(to_this);  
+  return to_this; // ltodo test that it returns value...
+}
+
+static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
+  // TODO optionally not assert [?]
+  <% if assert_key_type %>
+    if(!(TYPE(get_this) == <%= assert_key_type %>)) {
+       rb_raise(rb_eTypeError, "not valid value #{assert_key_type}");
+    }
+  <% end %>
+  RCallback* cbs = GetCallbackStruct(cb);
+  
+  <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator out = cbs->hash_map->find(<%= convert_keys_from_ruby %>(get_this));
+  
+  if(out == cbs->hash_map->end()) { // not found...hmm...is this False, though?
+    return Qnil;
+  } else {
+    return <%= convert_values_to_ruby %>(out->second);
+  }
+}
+
+static VALUE rb_ghash_each(VALUE cb) {
+    RCallback* incoming = GetCallbackStruct(cb);
+    for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+      rb_yield_values(2, <%= convert_keys_to_ruby %>(it->first), <%= convert_values_to_ruby %>(it->second));
+    }
+    return cb;  
+}
+  
+static VALUE rb_ghash_values(VALUE cb) {
+    RCallback* incoming = GetCallbackStruct(cb);
+    VALUE out = rb_ary_new2(incoming->hash_map->size());
+     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %>  >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+      rb_ary_push(out, <%= convert_values_to_ruby %>(it->second));
+    } 
+    return out;
+}
+  
+static VALUE rb_ghash_keys(VALUE cb) {
+    RCallback* incoming = GetCallbackStruct(cb);
+    VALUE out = rb_ary_new2(incoming->hash_map->size());
+     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+      rb_ary_push(out, <%= convert_keys_to_ruby %>(it->first));
+    } 
+    return out;
+}
+
+
+// only yields for now :)
+
+static VALUE rb_ghash_combination_2(VALUE cb) {
+    RCallback* incoming = GetCallbackStruct(cb);
+    
+     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+       
+       <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator next = it;
+       ++next; // advance it
+       
+       while(next != incoming->hash_map->end()) {
+         rb_yield_values(2, <%= convert_keys_to_ruby %>(it->first), <%= convert_keys_to_ruby %>(next->first));
+         ++next;
+       }
+    }
+    return cb;
+}
+
+
+void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
+  
+    VALUE rb_cGoogleHashLocal;
+    rb_cGoogleHashLocal = rb_define_class("GoogleHash<%= type.capitalize %><%= english_key_type.capitalize %>To<%= english_value_type.capitalize %>", rb_cObject);
+
+    rb_define_alloc_func(rb_cGoogleHashLocal, callback_alloc); // I guess it calls this for us, pre initialize... 
+
+    rb_define_method(rb_cGoogleHashLocal, "initialize", RUBY_METHOD_FUNC(rb_mri_hash_new), 0); 
+    rb_define_method(rb_cGoogleHashLocal, "[]=", RUBY_METHOD_FUNC(rb_ghash_set), 2); 
+    rb_define_method(rb_cGoogleHashLocal, "[]", RUBY_METHOD_FUNC(rb_ghash_get), 1); 
+    rb_define_method(rb_cGoogleHashLocal, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0);
+    rb_define_method(rb_cGoogleHashLocal, "values", RUBY_METHOD_FUNC(rb_ghash_values), 0); 
+    rb_define_method(rb_cGoogleHashLocal, "keys", RUBY_METHOD_FUNC(rb_ghash_keys), 0); 
+    rb_define_method(rb_cGoogleHashLocal, "keys_combination_2", RUBY_METHOD_FUNC(rb_ghash_combination_2), 0); 
+    id_eql = rb_intern("eql?");
+    id_hash = rb_intern("hash");
+  } 
+}
+
