@@ -30,6 +30,14 @@ int_type = {:convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2
 
 
 for type, options in {'sparse' => int_type, 'dense' => int_type.merge(:setup_code => 'set_empty_key(1<<31);') } do
+  
+  # create local variables so that the template can look cleaner
+  setup_code = options[:setup_code]
+  convert_keys_from_ruby = options[:convert_keys_from_ruby]
+  convert_keys_to_ruby = options[:convert_keys_to_ruby]
+  key_type = options[:key_type]
+  value_type = options[:value_type]
+  
   template = ERB.new(File.read('template/google_hash.cpp.erb'))  
   File.write(type.to_s + '.cpp', template.result(binding))
 end
