@@ -58,14 +58,14 @@ struct eqint
 
 
 typedef struct {
-  <%= type %>_hash_map<int, VALUE> *hash_map;
+  <%= type %>_hash_map<<%= options[:key_type]%>, VALUE> *hash_map;
 } RCallback;
 
 
 static VALUE rb_cGoogleHash<%= type %>;
 
 static void mark_hash_map_values(RCallback *incoming) {
-  for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+  for(<%= type %>_hash_map<<%= options[:key_type]%>, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
      rb_gc_mark(it->second);
   }
 }
@@ -82,7 +82,7 @@ callback_alloc( VALUE klass )
     VALUE cb;
     RCallback* cbs;
     cb = Data_Make_Struct(klass, RCallback, mark_hash_map_values, free_hash_callback, cbs);
-    cbs->hash_map = new <%= type %>_hash_map<int, VALUE>();
+    cbs->hash_map = new <%= type %>_hash_map<<%= options[:key_type]%>, VALUE>();
     <% if options[:setup_code] %>
 	     cbs->hash_map-><%= options[:setup_code] %>;
     <% end %> 
@@ -104,7 +104,7 @@ static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
      rb_raise(rb_eTypeError, "not valid value");
   }
   RCallback* cbs = GetCallbackStruct(cb);
-  (*cbs->hash_map)[FIX2INT(set_this)] = to_this;  
+  (*cbs->hash_map)[<%= options[:convert_keys_from_ruby] %>(set_this)] = to_this;  
   return to_this; // ltodo test that it returns value...
 }
 
@@ -113,41 +113,40 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
      rb_raise(rb_eTypeError, "not valid value");
   }
   RCallback* cbs = GetCallbackStruct(cb);
-  VALUE out = (*cbs->hash_map)[FIX2INT(get_this)];
+  VALUE out = (*cbs->hash_map)[<%= options[:convert_keys_from_ruby] %>(get_this)];
   if(out == NULL) { // null pointer means "wasn't found"
     return Qnil;
   }
   return out;
 }
 
-  static VALUE rb_ghash_each(VALUE cb) {
+static VALUE rb_ghash_each(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
     // LODO assert block given
-  for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
-    rb_yield_values(2, INT2FIX(it->first), it->second);
-  }
-  return cb;
+    for(<%= type %>_hash_map<<%= options[:key_type]%>, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+      rb_yield_values(2, <%= options[:convert_keys_to_ruby] %>(it->first), it->second);
+    }
+    return cb;
   
-  }
+}
   
-  static VALUE rb_ghash_values(VALUE cb) {
+static VALUE rb_ghash_values(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
     VALUE out = rb_ary_new2(incoming->hash_map->size());
-     for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+     for(<%= type %>_hash_map<<%= options[:key_type]%>, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
       rb_ary_push(out, it->second);
     } 
     return out;
-  }
+}
   
-  static VALUE rb_ghash_keys(VALUE cb) {
+static VALUE rb_ghash_keys(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
     VALUE out = rb_ary_new2(incoming->hash_map->size());
-     for(<%= type %>_hash_map<int, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
-      rb_ary_push(out, INT2FIX(it->first));
+     for(<%= type %>_hash_map<<%= options[:key_type]%>, VALUE>::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
+      rb_ary_push(out, <%= options[:convert_keys_to_ruby] %>(it->first));
     } 
     return out;
-  }
-
+}
 
 void init_<%= type %>() {
     rb_cGoogleHash<%= type %> = rb_define_class("GoogleHash<%= type.capitalize %>", rb_cObject);

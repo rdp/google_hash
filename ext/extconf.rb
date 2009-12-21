@@ -26,7 +26,7 @@ end
 # ltodo if I am using longs, this 31 needs to be a 63 on 64 bit machines...
 # if I ever use longs :)
 
-int_type = {:convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX"}
+int_type = {:convert_keys_from_ruby => "FIX2INT", :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :value_type => "ruby"}
 
 
 for type, options in {'sparse' => int_type, 'dense' => int_type.merge(:setup_code => 'set_empty_key(1<<31);') } do
