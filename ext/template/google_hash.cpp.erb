@@ -23,7 +23,9 @@ struct eqstr
   }
 };
 
-   
+static hash<const char*> H;
+
+// hashing it is like hash<const char*>
 
 static ID id_eql, id_hash;
 
@@ -53,21 +55,31 @@ struct hashrb
            // hmm
            // use our own custom hash function for well known types
            // to avoid a function call
+           // this speeds up ints 29/44
+           // and slows down strings 47/44 populating (dense)
             switch (TYPE(hash_me)) {
               // ltodo does this help?
               // if so more types?
               case T_FIXNUM:              
+              case T_FLOAT:
+              case T_SYMBOL:
+               // ltodo
                 return hash_me;
-            }           
+              case T_BIGNUM:
+	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hash_me)))[0]);
+	            //case T_STRING:
+	            // return H(StringValueCStr(hash_me));
+	          }        
            
             VALUE hval = rb_funcall(hash_me, id_hash, 0);
+            
             retry:
             switch (TYPE(hval)) {
               case T_FIXNUM:
-	            return hval;
+	              return hval;
 
               case T_BIGNUM:
-	            return LONG2FIX(((long*)(RBIGNUM_DIGITS(hval)))[0]);
+	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hval)))[0]);
 
               default:
 	              hval = rb_to_int(hval);
@@ -94,8 +106,6 @@ typedef struct {
   <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> > *hash_map;
 } RCallback;
 
-
-static VALUE rb_cGoogleHashLocal;
 
 static void mark_hash_map_values(RCallback *incoming) {
   <% if value_type == 'VALUE' || key_type == 'VALUE' %>
@@ -198,7 +208,11 @@ static VALUE rb_ghash_keys(VALUE cb) {
     return out;
 }
 
+
+
 void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
+  
+    VALUE rb_cGoogleHashLocal;
     rb_cGoogleHashLocal = rb_define_class("GoogleHash<%= type.capitalize %><%= english_key_type.capitalize %>To<%= english_value_type.capitalize %>", rb_cObject);
 
     rb_define_alloc_func(rb_cGoogleHashLocal, callback_alloc); // I guess it calls this for us, pre initialize... 
