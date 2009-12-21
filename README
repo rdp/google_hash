@@ -47,3 +47,5 @@ Enjoy.
 -r
 
 [1] http://code.google.com/p/google-sparsehash
+
+If you want to see the code/hack on it, run extconf.rb within the ext directory, to create the code it actually uses from a template
