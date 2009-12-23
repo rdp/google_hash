@@ -50,13 +50,20 @@ If you have a desired use case let me know and I might well be able to code it u
 
 ex: currently it uses longs internally instead of ints--if you want ints or chars or what not, let me know.
 
+if you want it to remember insertion order, I could do that, too, or native "store away" strings/bignums, whatever.
+
+
 This is meant to be one more tool in the rubyists toolbelt when trying to optimize speed-wise, and plans to expand to more types, but at least with this release it has a #each method.
 
-Note that sparse maps can be saved to disk--ask if you want/need this functionality.
-
 Enjoy.
+
 -r
 
 [1] http://code.google.com/p/google-sparsehash
 
 If you want to see the code/hack on it, run extconf.rb within the ext directory, to create the code it actually uses (from a template).
+
+
+Related:
+
+judy http://groups.google.com/group/ruby-talk-google/browse_thread/thread/05ed587925526a7f/314375891d12b672?lnk=raot
