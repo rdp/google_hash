@@ -46,13 +46,15 @@ long_value = {:assert_value_type => 'T_FIXNUM', :convert_values_from_ruby => "FI
   :convert_values_to_ruby => "LONG2FIX", :value_type => "long"}
 
 
-
-int_to_ruby = long_key.merge(ruby_value)
+long_to_ruby = long_key.merge(ruby_value)
 ruby_to_ruby = ruby_key.merge(ruby_value)
+
+long_to_long = long_key.merge(long_value)
+
 
 init_funcs = []
 
-for options in [int_to_ruby, ruby_to_ruby] do
+for options in [long_to_ruby, ruby_to_ruby] do
  for type in ['sparse', 'dense'] do
   raise unless options[:value_type] && options[:key_type]
   
