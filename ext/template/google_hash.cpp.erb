@@ -15,6 +15,10 @@ extern "C" {
 
 // some helpers
 
+<% 
+ # not yet used...
+  if false   
+%>
 struct eqstr
 {
   bool operator()(const char* s1, const char* s2) const
@@ -23,11 +27,23 @@ struct eqstr
   }
 };
 
+struct eqint
+{
+  inline bool operator()(int s1, int s2) const
+  {
+    return s1 == s2;
+  }
+};
+
+<% end %>
+
+
+static ID id_eql, id_hash;
+
+<% if key_type == 'VALUE' %>
 static hash<const char*> H;
 
 // hashing it is like hash<const char*>
-
-static ID id_eql, id_hash;
 
 struct eqrb
 {
@@ -97,16 +113,9 @@ struct hashrb
       }
 };
 
-
+<% end %>
 
 /* we end up not needing this...or at least not using it, I don't know if it would be faster than using the default or not
-struct eqint
-{
-  inline bool operator()(int s1, int s2) const
-  {
-    return s1 == s2;
-  }
-};
 */
 
 

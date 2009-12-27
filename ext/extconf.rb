@@ -51,13 +51,12 @@ ruby_to_ruby = ruby_key.merge(ruby_value)
 
 long_to_long = long_key.merge(long_value)
 
-
 init_funcs = []
-
-for options in [long_to_ruby, ruby_to_ruby] do
+require 'sane'
+for options in [long_to_ruby, ruby_to_ruby, long_to_long] do
  for type in ['sparse', 'dense'] do
-  raise unless options[:value_type] && options[:key_type]
-  
+ 
+
   # create local variables so that the template can look cleaner
   unreachable_key = options[:unreachable_key]
   convert_keys_from_ruby = options[:convert_keys_from_ruby]
@@ -75,6 +74,8 @@ for options in [long_to_ruby, ruby_to_ruby] do
   if options[:key_type] == 'VALUE'
     extra_hash_params =  ", hashrb, eqrb"  # use these methods for comparison
     # ltodo is that the right hash -- is is type_t
+  else
+  	extra_hash_params = nil
   end
   
   template = ERB.new(File.read('template/google_hash.cpp.erb'))  
