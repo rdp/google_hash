@@ -2,7 +2,6 @@ Pleased to announce the initial release of the "google_hash" gem.
 
 Its goal. To boldly be faster than any hash hash before (cue star trek TNG theme).
 
-
 The goal is basically a better hash, either one that is faster or more space efficient than ruby's default.  To attempt this we wrap the google sparse and dense hashes [1].
 
 Speed results (populating 500000 integers):
@@ -43,12 +42,13 @@ For a complete list, see types.txt, but it's all the various combinations of Rub
 To learn if sparse or dense is right for you, check their documentation: 
 
 http://google-sparsehash.googlecode.com/svn/trunk/doc/index.html
-
 Dense is faster, sparse uses less memory.
 
 Installation:
 
-gem install google_hash (if on doze, you'll first need the devkit installed)
+gem install os # install a dependency
+gem install sane # install a dependency
+gem install google_hash (if on doze, you'll also first need the devkit installed)
 
 Note that if you use a type other than "Ruby" that you will be saving the values away as native values, so they will be using less space than a typical ruby object (which is 20 bytes), using 4 bytes instead of 20 (or instead of 40, in the case of 64 bit machines).  In addition to taking less memory, they are also stored separate from Ruby's heap, meaning that they should release stress on the GC, if you are spending much time in GC.
 
