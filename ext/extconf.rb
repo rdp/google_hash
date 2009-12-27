@@ -72,8 +72,7 @@ for options in [long_to_ruby, ruby_to_ruby, long_to_long] do
   
   
   if options[:key_type] == 'VALUE'
-    extra_hash_params =  ", hashrb, eqrb"  # use these methods for comparison
-    # ltodo is that the right hash -- is is type_t
+    extra_hash_params =  ", hashrb, eqrb"
   else
   	extra_hash_params = nil
   end

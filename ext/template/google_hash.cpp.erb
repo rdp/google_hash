@@ -63,6 +63,10 @@ struct eqrb
   }
 };
 
+#ifndef RBIGNUM_DIGITS
+# define RBIGNUM_DIGITS(a) RBIGNUM(a)->digits
+#endif
+
 struct hashrb
 {
     size_t operator()(VALUE hash_me) const
@@ -84,10 +88,8 @@ struct hashrb
               case T_SYMBOL:
                // ltodo
                 return hash_me;
-            <% unless RUBY_VERSION < '1.9' %>
               case T_BIGNUM:
 	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hash_me)))[0]); // its first digit...I'm thinkin'
-            <% end %>
 	            case T_STRING:
 	             //return H(StringValueCStr(hash_me)); // populate/lookup 0.26 -> 0.23 [core is 0.16 somehow]
 	             // perhaps they cache?
