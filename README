@@ -13,40 +13,46 @@ Hash (Ruby default)
 0.359375 (populate)
 1.1875   (each)
 
-GoogleHashDense
+GoogleHashDenseIntToInt
 0.1875   (populate)
 0.078125 (each)
 
-GoogleHashSparse
+GoogleHashSparseIntToInt
 0.53125  (populate)
 0.078125 (each)
 
 Usage:
 
-a = GoogleHashDenseRubyToRuby.new # or GoogleHash.new
-b = GoogleHashDenseLongToRuby.new # :int => Ruby
-b = GoogleHashSparseLongToRuby.new # :int => Ruby
+a = GoogleHashDenseRubyToRuby.new
+b = GoogleHashDenseIntToRuby.new # :int => Ruby
+c = GoogleHashSparseIntToInt.new # :int => :int
+d = GoogleHashSparseIntToInt.new # :long => :long  (longs are 8 byte ints on 64-bit machines, so can store larger numbers)
 
 a[3] = 4
 b[4] = 'abc'
-b['abc'.hash] = 'some complex object' 
+b['abc'] = 'some complex object' 
+c[3] = 4 # all you can use are ints
 
 a.each{|k, v| ... }
 
 a.keys => Array
 a.values => Array
 
+For a complete list, see types.txt, but it's all the various combinations of Ruby, Int, and Long.
+
 To learn if sparse or dense is right for you, check their documentation: 
 
 http://google-sparsehash.googlecode.com/svn/trunk/doc/index.html
 
+Dense is faster, sparse uses less memory.
+
 Installation:
 
-gem install google_hash (if on doze, you'll need the devkit installed)
+gem install google_hash (if on doze, you'll first need the devkit installed)
 
-Both classes are currently more space efficient than a hash, because they store keys as "native" ints, so the keys no longer affect GC time, as well as only use 4 bytes instead of 20 (or 8 instead of 40, on 64 bit).  This should release stress on the GC, and both GoogleHashDense and GoogleHashSparse do this.  In terms of total memory usage GoogleHashDense uses more, and is more speedy, GoogleHashSparse uses less, and is much more memory efficient (2 bits per entry, or so I'm told).
+Note that if you use a type other than "Ruby" that you will be saving the values away as native values, so they will be using less space than a typical ruby object (which is 20 bytes), using 4 bytes instead of 20 (or instead of 40, in the case of 64 bit machines).  In addition to taking less memory, they are also stored separate from Ruby's heap, meaning that they should release stress on the GC, if you are spending much time in GC.
 
-If you have a desired use case let me know and I might well be able to code it up for you.
+If you have a desired use case that's not covered, let me know and I might well be able to code it up for you and add it.
 
 ex: currently it uses longs internally instead of ints--if you want ints or chars or what not, let me know.
 
@@ -62,7 +68,6 @@ Enjoy.
 [1] http://code.google.com/p/google-sparsehash
 
 If you want to see the code/hack on it, run extconf.rb within the ext directory, to create the code it actually uses (from a template).
-
 
 Related:
 
