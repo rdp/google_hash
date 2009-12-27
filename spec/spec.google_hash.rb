@@ -156,7 +156,7 @@ describe "google_hash" do
   
   it "should raise on errant values" do
     a = GoogleHashDenseLongToLong.new
-    proc { a[3] = 4}.should raise_error
+    proc { a[3] = 'abc'}.should raise_error
   end  
   
   it "should have an Enumerator for values, keys, on demand"

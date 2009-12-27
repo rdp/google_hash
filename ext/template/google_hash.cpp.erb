@@ -180,9 +180,17 @@ rb_mri_hash_new(VALUE freshly_created) {
 static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
   <% if assert_key_type %>
     if(!(TYPE(set_this) == <%= assert_key_type %>)) {
-       rb_raise(rb_eTypeError, "not valid value #{assert_key_type}");
+       rb_raise(rb_eTypeError, "not valid key #{assert_key_type}");
     }
   <% end %>
+  
+  <% if assert_value_type %>
+    if(!(TYPE(to_this) == <%= assert_value_type %>)) {
+       rb_raise(rb_eTypeError, "not valid value #{assert_value_type}");
+    }
+  <% end %>
+
+  
   RCallback* cbs = GetCallbackStruct(cb);
   (*cbs->hash_map)[ <%= convert_keys_from_ruby %>(set_this)] = <%= convert_values_from_ruby %>(to_this);  
   return to_this; // ltodo test that it returns value...
@@ -192,7 +200,7 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
   // TODO optionally not assert [?]
   <% if assert_key_type %>
     if(!(TYPE(get_this) == <%= assert_key_type %>)) {
-       rb_raise(rb_eTypeError, "not valid value #{assert_key_type}");
+       rb_raise(rb_eTypeError, "not valid key #{assert_key_type}");
     }
   <% end %>
   RCallback* cbs = GetCallbackStruct(cb);

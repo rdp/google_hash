@@ -69,7 +69,7 @@ for options in [long_to_ruby, ruby_to_ruby, long_to_long] do
   assert_key_type = options[:assert_key_type]
   convert_values_from_ruby = options[:convert_values_from_ruby]
   convert_values_to_ruby = options[:convert_values_to_ruby]
-  
+  assert_value_type = options[:assert_value_type]  
   
   if options[:key_type] == 'VALUE'
     extra_hash_params =  ", hashrb, eqrb"
