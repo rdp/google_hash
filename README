@@ -4,7 +4,7 @@ Its goal. To boldly be faster than any hash hash before (cue star trek TNG theme
 
 The goal is basically a better hash, either one that is faster or more space efficient than ruby's default.  To attempt this we wrap the google sparse and dense hashes [1].
 
-Speed results (populating 500000 integers):
+Speed results (IntToInt hash, populating 500000 integers):
 
 1.9.1p376 (mingw):
 
@@ -19,6 +19,8 @@ GoogleHashDenseIntToInt
 GoogleHashSparseIntToInt
 0.53125  (populate)
 0.078125 (each)
+
+See also the results.txt file
 
 Usage:
 
