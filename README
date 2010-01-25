@@ -32,12 +32,14 @@ d = GoogleHashSparseIntToInt.new # :long => :long  (longs are 8 byte ints on 64-
 a[3] = 4
 b[4] = 'abc'
 b['abc'] = 'some complex object' 
-c[3] = 4 # all you can use are ints
+c[3] = 4 # all you can use are ints...
 
 a.each{|k, v| ... }
 
-a.keys => Array
-a.values => Array
+a.keys 
+ => Array
+a.values 
+ => Array
 
 For a complete list, see types.txt, but it's all the various combinations of Ruby, Int, and Long.
 
@@ -60,6 +62,7 @@ ex: currently it uses longs internally instead of ints--if you want ints or char
 
 if you want it to remember insertion order, I could do that, too, or native "store away" strings/bignums, whatever.
 
+Could also add vectors, vector(pairs), priority queues, floats, native bignums, other more complex types, if anybody asks me to.
 
 This is meant to be one more tool in the rubyists toolbelt when trying to optimize speed-wise, and plans to expand to more types, but at least with this release it has a #each method.
 
@@ -74,3 +77,5 @@ If you want to see the code/hack on it, run extconf.rb within the ext directory,
 Related:
 
 judy http://groups.google.com/group/ruby-talk-google/browse_thread/thread/05ed587925526a7f/314375891d12b672?lnk=raot
+
+NArray gem : provides "native" type arrays (and X-D array)
