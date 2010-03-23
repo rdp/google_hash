@@ -1,10 +1,11 @@
-Pleased to announce the initial release of the "google_hash" gem.
+The "google_hash" gem.
 
 Its goal. To boldly be faster than any hash hash before (cue star trek TNG theme).
 
-The goal is basically a better hash, either one that is faster or more space efficient than ruby's default.  To attempt this we wrap the google sparse and dense hashes [1].
+Well, really the goal is a better hash for Ruby, either one that is faster or more space efficient than ruby's default.  
+To attempt to accomplish this, we wrap the google sparse and dense hashes [1] and see how they perform.
 
-Speed results (IntToInt hash, populating 500000 integers):
+Time results (IntToInt hash, populating 500000 integers):
 
 1.9.1p376 (mingw):
 
@@ -19,6 +20,9 @@ GoogleHashDenseIntToInt
 GoogleHashSparseIntToInt
 0.53125  (populate)
 0.078125 (each)
+
+These also use significantly less memory, because (if you specify IntToInt, it stores only 4 bytes per int, instead of Ruby's
+usual 20 bytes).  This also frees up Ruby so it doesn't hvae to garbage collect as much.  Yea!
 
 See also the results.txt file
 

@@ -7,7 +7,7 @@
 using google::<%= type %>_hash_map;      // namespace where class lives by default
 using std::cout;
 using std::endl;
-<% if OS.linux? %>
+<% if OS.posix? %>
   #include <ext/hash_set>
 <% end %>
 using __gnu_cxx::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
