@@ -12,11 +12,6 @@ using std::endl;
 <% end %>
 using __gnu_cxx::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
 
-#ifndef RBIGNUM_DIGITS
-    // 1.8 compat
-    #define RBIGNUM_DIGITS(obj) RBIGNUM(obj)->digits
-#endif
-
 extern "C" {
 
 // some helpers
@@ -45,6 +40,37 @@ struct eqint
 
 
 static ID id_eql, id_hash;
+
+<% if key_type == 'double' %>
+
+struct eqdouble
+
+{
+
+  bool operator()(const double &f1, const double &f2) const
+
+  {
+
+    return f1 == f2;
+
+  }
+
+};
+
+
+extern hash<int> inthash;
+
+struct hashdouble {
+
+  size_t operator ()(const double& foo) const {
+
+    return inthash((int)foo);
+
+  }
+
+};
+
+<% end %>
 
 <% if key_type == 'VALUE' %>
 static hash<const char*> H;
@@ -179,8 +205,9 @@ rb_mri_hash_new(VALUE freshly_created) {
 
 static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
   <% if assert_key_type %>
+    
     if(!(TYPE(set_this) == <%= assert_key_type %>)) {
-       rb_raise(rb_eTypeError, "not valid key #{assert_key_type}");
+       rb_raise(rb_eTypeError, "not valid key <%= assert_key_type %>");
     }
   <% end %>
   

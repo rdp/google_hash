@@ -158,17 +158,42 @@ describe "google_hash" do
     proc { a[3] = 'abc'}.should raise_error
   end
   
-  it "should have really bignums" do
-    a = GoogleHashBigNumToBigNum.new
+  it "should do bignum values as doubles" do
+    a = GoogleHashDenseDoubleToInt.new
     a[10000000000000000000] = 1
-    a[10000000000000000000] = 10000000000000000000
+    a[10000000000000000000].should == 1
+  end
+  
+  it "should do int values as doubles" do
+    a = GoogleHashDenseDoubleToInt.new
+    a[1] = 1
+    a[1].should == 1
+  end
+
+  it "should do float values as doubles" do
+    a = GoogleHashDenseDoubleToInt.new
+    a[1.0] = 1
+    a[1.0].should == 1
+  end
+  
+  it "should do bignum to doubles et al" do
+    a = GoogleHashDenseDoubleToDouble.new
+    a[10000000000000000000] = 1
+    a[10000000000000000000].should == 1
     a[1] = 10000000000000000000
-    a = GoogleHashBigNumToRubyNum.new
+    a[1].should == 10000000000000000000
+    a[10000000000000000000] = 10000000000000000000
+    a[10000000000000000000].should == 10000000000000000000
+  end
+  
+  it "should have really real bignums" do
+    fail 'same as above plus'
+    a = GoogleHashDenseBignumToRuby.new
     a[10000000000000000000] = 'abc'
   end
   
   it 'should be able to delete bignums without leaking' do
-    a = GoogleHashBigNumToBigNum.new
+    a = GoogleHashDenseBignumToBignum.new
     100_000.times {
       a[10000000000000000000] = 1
       a.size.should == 1

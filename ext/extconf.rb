@@ -34,25 +34,26 @@ else
   unreachable_int = 63
 end
 
-ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :unreachable_key => "current_instance"} # TODO NULL is false here?
-# long is not useful to us since we don't support BigNum yet
-# i.e. long is basically the same as int till we do
-# so leave it out
-#long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG",
-#:convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "1<<#{unreachable_int}"}
+ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", 
+  :extra_hash_params => ", hashrb, eqrb", :unreachable_key => "current_instance"} # TODO NULL is false here?
 int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT",
-:convert_keys_to_ruby => "INT2FIX", :key_type => "int", :unreachable_key => "1<<#{unreachable_int}"}
+  :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :unreachable_key => "1<<#{unreachable_int}"}
+# "long" is not useful to us since it's the same as int...
+bignum_key = {:assert_key_type => 'T_BIGNUM', :convert_keys_from_ruby => "rb_big2dbl",
+  :convert_keys_to_ruby => "rb_dbl2big", :key_type => "double", :unreachable_key => "0", 
+  :extra_hash_params => ", hashdouble, eqdouble"}  # fixnum's can never be zero...
 
 
-ruby_value =  {:value_type => "VALUE"}
-#long_value = {:assert_value_type => 'T_FIXNUM', :convert_values_from_ruby => "FIX2LONG",
-#:convert_values_to_ruby => "LONG2FIX", :value_type => "long"}
+ruby_value = {:value_type => "VALUE"}
 int_value = {:assert_value_type => 'T_FIXNUM', :convert_values_from_ruby => "FIX2INT",
-:convert_values_to_ruby => "INT2FIX", :value_type => "int"}
+  :convert_values_to_ruby => "INT2FIX", :value_type => "int"}
+
+bignum_value = {:assert_value_type => 'T_BIGNUM', :convert_values_from_ruby => "rb_big2dbl",
+  :convert_values_to_ruby => "rb_dbl2big", :value_type => "double"}
 
 init_funcs = []
 
-for key in [ruby_key, int_key] do
+for key in [ruby_key, int_key, bignum_key] do
   for value in [ruby_value, int_value] do
     options = key.merge(value)
     for type in ['sparse', 'dense'] do
@@ -72,12 +73,8 @@ for key in [ruby_key, int_key] do
       convert_values_to_ruby = options[:convert_values_to_ruby]
       assert_value_type = options[:assert_value_type]
 
-      if options[:key_type] == 'VALUE'
-        extra_hash_params =  ", hashrb, eqrb"
-      else
-        extra_hash_params = nil
-      end
-
+      extra_hash_params = options[:extra_hash_params]
+      
       template = ERB.new(File.read('template/google_hash.cpp.erb'))
       descriptor = type + '_' + english_key_type + '_to_' + english_value_type;
       File.write(descriptor + '.cpp', template.result(binding))
