@@ -192,6 +192,7 @@ describe "google_hash" do
   end
   
   it "should do bignum to doubles et al" do
+    pending
     a = GoogleHashDenseDoubleToDouble.new
     a[10000000000000000000] = 1
     a[10000000000000000000].should == 1
@@ -202,12 +203,14 @@ describe "google_hash" do
   end
   
   it "should have really real bignums" do
+    pending
     fail 'same as above plus'
     a = GoogleHashDenseBignumToRuby.new
     a[10000000000000000000] = 'abc'
   end
   
   it 'should be able to delete bignums without leaking' do
+    pending
     a = GoogleHashDenseBignumToBignum.new
     100_000.times {
       a[10000000000000000000] = 1
