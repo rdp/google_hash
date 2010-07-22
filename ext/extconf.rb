@@ -35,8 +35,9 @@ else
 end
 
 ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :unreachable_key => "current_instance"} # TODO NULL is false here?
-#long is not useful to us since we don't support BigNum yet
-# i.e. long is basically broken till we do
+# long is not useful to us since we don't support BigNum yet
+# i.e. long is basically the same as int till we do
+# so leave it out
 #long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG",
 #:convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "1<<#{unreachable_int}"}
 int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT",

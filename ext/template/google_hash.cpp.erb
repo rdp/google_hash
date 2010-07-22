@@ -11,6 +11,12 @@ using std::endl;
   #include <ext/hash_set>
 <% end %>
 using __gnu_cxx::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
+
+#ifndef RBIGNUM_DIGITS
+    // 1.8 compat
+    #define RBIGNUM_DIGITS(obj) RBIGNUM(obj)->digits
+#endif
+
 extern "C" {
 
 // some helpers
@@ -103,33 +109,27 @@ struct hashrb
             switch (TYPE(hval)) {
               case T_FIXNUM:
 	              return hval;
-<% unless RUBY_VERSION < '1.9' %>
               case T_BIGNUM:
 	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hval)))[0]);
-<% end %>
-
               default:
 	              hval = rb_to_int(hval);
 	              goto retry;
-        }  
-  
+              }
       }
 };
 
 <% end %>
-
-/* we end up not needing this...or at least not using it, I don't know if it would be faster than using the default or not
-*/
 
 
 typedef struct {
   <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> > *hash_map;
 } RCallback;
 
-
 static void mark_hash_map_values(RCallback *incoming) {
   <% if value_type == 'VALUE' || key_type == 'VALUE' %>
-
+    
+    // only need to iterate if we store *real* Ruby values
+    
     for(<%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator it = incoming->hash_map->begin(); it != incoming->hash_map->end(); ++it) {
      
      <% if value_type == 'VALUE' %>

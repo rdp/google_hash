@@ -6,7 +6,7 @@ require 'spec/autorun'
 describe "google_hash" do
 
   before do
-   @subject = GoogleHashSparseLongToRuby.new
+   @subject = GoogleHashSparseIntToRuby.new
   end
 
   it "should be instantiable" do
@@ -149,13 +149,13 @@ describe "google_hash" do
   end
   
   it "should work with all Longs" do
-    a = GoogleHashDenseLongToLong.new
+    a = GoogleHashDenseIntToInt.new
     a[3] = 4
     a[3].should == 4
   end
   
   it "should raise on errant values" do
-    a = GoogleHashDenseLongToLong.new
+    a = GoogleHashDenseIntToInt.new
     proc { a[3] = 'abc'}.should raise_error
   end  
   
