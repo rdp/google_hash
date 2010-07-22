@@ -141,7 +141,6 @@ describe "google_hash" do
     assert sum == 1 + 2 + 1 + 3 + 2 + 3
   end
 
-
   it "should have an Array for values, keys" do
     @subject[33] = 34
     @subject.keys.should == [33]
@@ -157,14 +156,35 @@ describe "google_hash" do
   it "should raise on errant values" do
     a = GoogleHashDenseIntToInt.new
     proc { a[3] = 'abc'}.should raise_error
-  end  
+  end
   
-  it "should have an Enumerator for values, keys, on demand"
+  it "should have really bignums" do
+    a = GoogleHashBigNumToBigNum.new
+    a[10000000000000000000] = 1
+    a[10000000000000000000] = 10000000000000000000
+    a[1] = 10000000000000000000
+    a = GoogleHashBigNumToRubyNum.new
+    a[10000000000000000000] = 'abc'
+  end
   
-  it "should have a block for values, keys, on demand"
+  it 'should be able to delete bignums without leaking' do
+    a = GoogleHashBigNumToBigNum.new
+    100_000.times {
+      a[10000000000000000000] = 1
+      a.size.should == 1
+      a.delete[10000000000000000000]
+      a.size.should == 0
+    }
+    assert OS.rss_bytes < 100_000
+  end
   
-  it "should have real sets"
+  it "should have an Enumerator for values, keys, an on demand, getNext enumerator object..."
   
-  it "should skip GC when native to native"
+  it "should have a block access for values, keys"
+  
+  it "should have sets, too, not just hashes"
+  
+  it "should skip GC when native to native" do
+  end
 
 end
