@@ -1,7 +1,11 @@
 require 'rubygems' if RUBY_VERSION < '1.9'
 require 'sane'
 require_relative '../ext/google_hash.so'
-require 'spec/autorun'
+begin
+  require 'spec/autorun'
+rescue LoadError
+  require 'rspec' # rspec2
+end
 
 describe "google_hash" do
 
@@ -162,6 +166,17 @@ describe "google_hash" do
     a = GoogleHashDenseDoubleToInt.new
     a[10000000000000000000] = 1
     a[10000000000000000000].should == 1
+  end
+  
+  it "should not leak" do
+    a = GoogleHashDenseIntToInt.new
+    100_000.times {
+      a[1] = 1
+      a[1]
+      a.each{|k, v|}
+      a.delete(1) rescue nil
+    }
+    OS.rss_bytes.should be < 25_000_000
   end
   
   it "should do int values as doubles" do

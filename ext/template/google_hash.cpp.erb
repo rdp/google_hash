@@ -205,18 +205,19 @@ rb_mri_hash_new(VALUE freshly_created) {
 
 static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
   <% if assert_key_type %>
-    
     if(!(TYPE(set_this) == <%= assert_key_type %>)) {
-       rb_raise(rb_eTypeError, "not valid key <%= assert_key_type %>");
+       <%= "if(!(TYPE(set_this) == #{assert_key_type2}))" if assert_key_type2 %>
+         rb_raise(rb_eTypeError, "not valid key (expected <%= assert_key_type %>)");
     }
   <% end %>
   
   <% if assert_value_type %>
     if(!(TYPE(to_this) == <%= assert_value_type %>)) {
-       rb_raise(rb_eTypeError, "not valid value #{assert_value_type}");
+       rb_raise(rb_eTypeError, "not valid value <%=assert_value_type%>");
     }
   <% end %>
 
+  <%= options[:extra_set_code] %>
   
   RCallback* cbs = GetCallbackStruct(cb);
   (*cbs->hash_map)[ <%= convert_keys_from_ruby %>(set_this)] = <%= convert_values_from_ruby %>(to_this);  
@@ -224,13 +225,15 @@ static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
 }
 
 static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
-  // TODO optionally not assert [?]
+  // TODO optionally not type check assert anywhere [?]
   <% if assert_key_type %>
     if(!(TYPE(get_this) == <%= assert_key_type %>)) {
-       rb_raise(rb_eTypeError, "not valid key #{assert_key_type}");
+       <%= "if(!(TYPE(get_this) == #{assert_key_type2}))" if assert_key_type2 %>
+         rb_raise(rb_eTypeError, "not valid get key (expected <%=assert_key_type%>)");
     }
   <% end %>
   RCallback* cbs = GetCallbackStruct(cb);
+  <%= options[:extra_get_code] %>
   
   <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator out = cbs->hash_map->find(<%= convert_keys_from_ruby %>(get_this));
   
@@ -268,7 +271,7 @@ static VALUE rb_ghash_keys(VALUE cb) {
 }
 
 
-// only yields for now :)
+// only does yields (blocks) for now :)
 
 static VALUE rb_ghash_combination_2(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
