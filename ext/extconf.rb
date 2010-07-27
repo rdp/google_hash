@@ -47,8 +47,8 @@ long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG
 bignum_as_double_key = {:assert_key_type => ['T_BIGNUM', 'T_FIXNUM'], :convert_keys_from_ruby => "rb_big2dbl",
   :convert_keys_to_ruby => "rb_dbl2big", :key_type => "double", :unreachable_key => "1<<#{unreachable_int}",  # LODO is this a bignum value though?
   :extra_hash_params => ", hashdouble, eqdouble",
-  :extra_set_code => "if(TYPE(set_this) == T_FIXNUM)\nset_this = rb_int2big(set_this);",
-  :extra_get_code => "if(TYPE(get_this) == T_FIXNUM) \n get_this = rb_int2big(get_this);"
+  :extra_set_code => "if(TYPE(set_this) == T_FIXNUM)\nset_this = rb_int2big(FIX2INT(set_this));",
+  :extra_get_code => "if(TYPE(get_this) == T_FIXNUM) \n get_this = rb_int2big(FIX2INT(get_this));"
 }
 
 ruby_value = {:value_type => "VALUE", :english_value_type => "ruby"}
@@ -59,7 +59,7 @@ long_value = {:assert_value_type => 'T_FIXNUM', :convert_values_from_ruby => "FI
   
 bignum_as_double_value = {:assert_value_type => ['T_BIGNUM', 'T_FIXNUM'], :convert_values_from_ruby => "rb_big2dbl",
   :convert_values_to_ruby => "rb_dbl2big", :value_type => "double",
-  :extra_set_code2 => "if(TYPE(to_this) == T_FIXNUM)\nto_this = rb_int2big(to_this);"
+  :extra_set_code2 => "if(TYPE(to_this) == T_FIXNUM)\nto_this = rb_int2big(FIX2INT(to_this));"
 }
   
   

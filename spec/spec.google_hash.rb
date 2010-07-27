@@ -179,6 +179,7 @@ describe "google_hash" do
   end
   
   it "should not leak" do
+    pending 'something that might leak'
     a = GoogleHashDenseIntToInt.new
     100_000.times {
       a[1] = 1
@@ -208,6 +209,8 @@ describe "google_hash" do
     a[10000000000000000000].should == 1
     a[1] = 10000000000000000000
     a[1].should == 10000000000000000000
+    a[4] = 3
+    a[4].should == 3
     a[10000000000000000000] = 10000000000000000000
     a[10000000000000000000].should == 10000000000000000000
   end
