@@ -226,7 +226,7 @@ static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
   return to_this; // ltodo test that it returns value...
 }
 
-static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
+static VALUE rb_ghash_get(VALUE cb, VALUE get_this, int just_check_for_presence) {
   // TODO optionally not type check assert anywhere [?]
   <% if assert_key_type %>
     if(!(TYPE(get_this) == <%= assert_key_type %>)) {
@@ -240,11 +240,32 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this) {
   <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator out = cbs->hash_map->find(<%= convert_keys_from_ruby %>(get_this));
   
   if(out == cbs->hash_map->end()) { // not found...hmm...is this False, though?
-    return Qnil;
+    if(just_check_for_presence)
+      return Qfalse;
+    else
+      return Qnil;
   } else {
-    return <%= convert_values_to_ruby %>(out->second);
+    if(just_check_for_presence)
+      return Qtrue;
+    else
+      return <%= convert_values_to_ruby %>(out->second);
   }
+  
 }
+
+static VALUE rb_ghash_get_value(VALUE cb, VALUE get_this) {
+  return rb_ghash_get(cb, get_this, 0);
+}
+
+static VALUE rb_ghash_get_present(VALUE cb, VALUE get_this) {
+  return  rb_ghash_get(cb, get_this, 1);
+}
+
+static VALUE rb_ghash_size(VALUE cb) {
+  RCallback* incoming = GetCallbackStruct(cb);
+  return INT2FIX(incoming->hash_map->size());
+}
+
 
 static VALUE rb_ghash_each(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
@@ -301,11 +322,16 @@ void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
 
     rb_define_method(rb_cGoogleHashLocal, "initialize", RUBY_METHOD_FUNC(rb_mri_hash_new), 0); 
     rb_define_method(rb_cGoogleHashLocal, "[]=", RUBY_METHOD_FUNC(rb_ghash_set), 2); 
-    rb_define_method(rb_cGoogleHashLocal, "[]", RUBY_METHOD_FUNC(rb_ghash_get), 1); 
+    rb_define_method(rb_cGoogleHashLocal, "[]", RUBY_METHOD_FUNC(rb_ghash_get_value), 1); 
     rb_define_method(rb_cGoogleHashLocal, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0);
     rb_define_method(rb_cGoogleHashLocal, "values", RUBY_METHOD_FUNC(rb_ghash_values), 0); 
     rb_define_method(rb_cGoogleHashLocal, "keys", RUBY_METHOD_FUNC(rb_ghash_keys), 0); 
+    rb_define_method(rb_cGoogleHashLocal, "has_key?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
+    rb_define_method(rb_cGoogleHashLocal, "key?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
+    rb_define_method(rb_cGoogleHashLocal, "member?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
+    rb_define_method(rb_cGoogleHashLocal, "include?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
     rb_define_method(rb_cGoogleHashLocal, "keys_combination_2", RUBY_METHOD_FUNC(rb_ghash_combination_2), 0); 
+    rb_define_method(rb_cGoogleHashLocal, "length", RUBY_METHOD_FUNC(rb_ghash_size), 0);
     id_eql = rb_intern("eql?");
     id_hash = rb_intern("hash");
   } 

@@ -37,30 +37,35 @@ describe "google_hash" do
   end
 
   it "should have key methods" do
+    @subject = a = GoogleHashDenseDoubleToInt.new
     @subject[33] = 3
     for method in [:has_key?, :include?, :key?, :member?] do
       @subject.send(method, 33).should == true
-      @subject.send(method, 34).should == true
+      @subject.send(method, 34).should == false
     end
     
   end
   
   it "should have all the methods desired" do
     # guess these could all be tests, themselves...
-    pending "interest"
-    @subject.each_key {}
-    @subject.each_value{}
     @subject.each{}
     @subject[33] = 'abc'
     @subject.length.should == 1
     @subject.each{}
     @subject.each{|k, v|
       k.should == 33
-      v.should == 1
+      v.should == 'abc'
     }
     @subject.delete(33).should == 'abc'
+    @subject.length.should == 0
+    @subject[33] = 'abc'
+    @subject.length.should == 1
     @subject.clear
     @subject.length.should == 0
+  end
+  
+  it 'should not be able to set the absent key for double' do
+    fail
   end
 
   def populate(a)
@@ -236,7 +241,12 @@ describe "google_hash" do
   
   it "should have an Enumerator for values, keys, an on demand, getNext enumerator object..."
   
-  it "should have a block access for values, keys"
+  it "should have a block access for values, keys" do
+    pending "interest"
+    @a[3] = 4
+    a.each_value {}
+    a.each_key {}
+  end
   
   it "should have sets, too, not just hashes"
   
