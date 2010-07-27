@@ -248,6 +248,13 @@ describe "google_hash" do
     a.each_key {}
   end
   
+  it "should have nice inspect" do
+    a = GoogleHashSparseIntToRuby.new
+    a[3] = 4
+    a[4] = 5
+    a.inspect.should == "GoogleHashSparseIntToRuby {3=>4,4=>5}"
+  end
+  
   it "should have sets, too, not just hashes"
   
   it "should skip GC when native to native" do
