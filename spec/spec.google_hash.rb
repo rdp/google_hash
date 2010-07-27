@@ -1,6 +1,6 @@
-require 'rubygems' if RUBY_VERSION < '1.9'
+require 'rubygems'
 require 'sane'
-require_relative '../ext/google_hash.so'
+require_relative '../ext/google_hash'
 begin
   require 'spec/autorun'
 rescue LoadError
@@ -13,8 +13,8 @@ describe "google_hash" do
    @subject = GoogleHashSparseIntToRuby.new
   end
 
-  it "should be instantiable" do
-    # nothing
+  it "should be instantiable [new method should not raise]" do
+    GoogleHashSparseIntToRuby.new
   end
 
   it "should allow you to set a key" do
@@ -36,23 +36,33 @@ describe "google_hash" do
    assert all_got.sort == ['abc', 'def']
   end
 
+  it "should have key methods" do
+    @subject[33] = 3
+    for method in [:has_key?, :include?, :key?, :member?] do
+      @subject.send(method, 33).should == true
+      @subject.send(method, 34).should == true
+    end
+    
+  end
+  
   it "should have all the methods desired" do
-    pending "need"
     # guess these could all be tests, themselves...
+    pending "interest"
     @subject.each_key {}
     @subject.each_value{}
     @subject.each{}
     @subject[33] = 'abc'
     @subject.length.should == 1
+    @subject.each{}
+    @subject.each{|k, v|
+      k.should == 33
+      v.should == 1
+    }
     @subject.delete(33).should == 'abc'
     @subject.clear
     @subject.length.should == 0
   end
 
-  it "should not leak" do
-    pending "testing if it leaks"
-  end
-  
   def populate(a)
     a['abc'] = 'def'
     a['bbc'] = 'yoyo'
@@ -109,8 +119,8 @@ describe "google_hash" do
     pending "if necessary"
   end
 
-  it "should do longs eventually" do
-    pending "caring about 64 bit"
+  it "should do longs" do
+    GoogleHashDenseLongToLong.new
   end
 
   it "should do 63 bit thingy for longs on 64 bit" do
@@ -186,13 +196,13 @@ describe "google_hash" do
   end
 
   it "should do float values as doubles" do
+    pending "interest in floats"
     a = GoogleHashDenseDoubleToInt.new
     a[1.0] = 1
     a[1.0].should == 1
   end
   
   it "should do bignum to doubles et al" do
-    pending
     a = GoogleHashDenseDoubleToDouble.new
     a[10000000000000000000] = 1
     a[10000000000000000000].should == 1
@@ -202,9 +212,9 @@ describe "google_hash" do
     a[10000000000000000000].should == 10000000000000000000
   end
   
-  it "should have really real bignums" do
+  it "should allow for storing true bignums" do
     pending
-    fail 'same as above plus'
+    fail 'same as above plus the following:'
     a = GoogleHashDenseBignumToRuby.new
     a[10000000000000000000] = 'abc'
   end

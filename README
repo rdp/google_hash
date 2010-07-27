@@ -28,10 +28,42 @@ See also the results.txt file
 
 Usage:
 
-a = GoogleHashDenseRubyToRuby.new
-b = GoogleHashDenseIntToRuby.new # :int => Ruby
+a = GoogleHashDenseRubyToRuby.new # like a normal Ruby hash, with slightly different performance characteristics, see benchmarks.txt
+b = GoogleHashDenseIntToRuby.new # :int => Ruby -- keys are stored as "native" ints, values are ruby objects
 c = GoogleHashSparseIntToInt.new # :int => :int
-d = GoogleHashSparseIntToInt.new # :long => :long  (longs are 8 byte ints on 64-bit machines, so can store larger numbers)
+
+Here's the full list of availables:
+
+>> Object.constants.each{|k k if k =~ /google/i }
+
+GoogleHashDenseLongToLong
+GoogleHashSparseLongToLong
+GoogleHashDenseLongToInt
+GoogleHashSparseLongToInt
+GoogleHashDenseLongToRuby
+GoogleHashSparseLongToRuby
+GoogleHashDenseDoubleToLong
+GoogleHashSparseDoubleToLong
+GoogleHashDenseDoubleToInt
+GoogleHashSparseDoubleToInt
+GoogleHashDenseDoubleToRuby
+GoogleHashSparseDoubleToRuby
+GoogleHashDenseIntToLong
+GoogleHashSparseIntToLong
+GoogleHashDenseIntToInt
+GoogleHashSparseIntToInt
+GoogleHashDenseIntToRuby
+GoogleHashSparseIntToRuby
+GoogleHashDenseRubyToLong
+GoogleHashSparseRubyToLong
+GoogleHashDenseRubyToInt
+GoogleHashSparseRubyToInt
+GoogleHashDenseRubyToRuby
+GoogleHashSparseRubyToRuby
+
+and how to use them:
+
+
 
 a[3] = 4
 b[4] = 'abc'
@@ -45,9 +77,7 @@ a.keys
 a.values 
  => Array
 
-For a complete list, see types.txt, but it's all the various combinations of Ruby, Int, and Long.
-
-To learn if sparse or dense is right for you, check their documentation: 
+To learn if sparse or dense is right for you, check the documentation: 
 
 http://google-sparsehash.googlecode.com/svn/trunk/doc/index.html
 Dense is faster, sparse uses less memory.
@@ -64,7 +94,7 @@ ex: currently it uses longs internally instead of ints--if you want ints or char
 
 if you want it to remember insertion order, I could do that, too, or native "store away" strings/bignums, whatever.
 
-Could also add vectors, vector(pairs), priority queues, floats, native bignums, other more complex types, if anybody asks me to.
+Could also add vectors, vector(pairs), priority queues, floats, native bignums, other more complex types, if anybody wants me to.
 
 This is meant to be one more tool in the rubyists toolbelt when trying to optimize speed-wise, and plans to expand to more types, but at least with this release it has a #each method.
 
@@ -80,4 +110,4 @@ Related:
 
 judy http://groups.google.com/group/ruby-talk-google/browse_thread/thread/05ed587925526a7f/314375891d12b672?lnk=raot
 
-NArray gem : provides "native" type arrays (and X-D array)
+NArray gem : provides "native" type arrays (and X-Dimensional arrays--all in native memory, so also saves memory as this gem does)

@@ -73,9 +73,8 @@ struct hashdouble {
 <% end %>
 
 <% if key_type == 'VALUE' %>
-static hash<const char*> H;
-
-// hashing it is like hash<const char*>
+// static hash<const char*> H; // unused currently...
+// using it is like hash<const char*>
 
 struct eqrb
 {
@@ -213,11 +212,14 @@ static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
   
   <% if assert_value_type %>
     if(!(TYPE(to_this) == <%= assert_value_type %>)) {
+      <%= "if(!(TYPE(to_this) == #{assert_value_type2}))" if assert_value_type2 %>
        rb_raise(rb_eTypeError, "not valid value <%=assert_value_type%>");
     }
   <% end %>
 
   <%= options[:extra_set_code] %>
+  
+  <%= options[:extra_set_code2] %>
   
   RCallback* cbs = GetCallbackStruct(cb);
   (*cbs->hash_map)[ <%= convert_keys_from_ruby %>(set_this)] = <%= convert_values_from_ruby %>(to_this);  

@@ -38,26 +38,35 @@ ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_ty
   :extra_hash_params => ", hashrb, eqrb", :unreachable_key => "current_instance"} # TODO NULL is false here?
 int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT",
   :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :unreachable_key => "1<<#{unreachable_int}"}
-# "long" is not useful to us since it's the same as int...
-bignum_key = {:assert_key_type => ['T_BIGNUM', 'T_FIXNUM'], :convert_keys_from_ruby => "rb_big2dbl",
+  
+# "long" is useful on 64 bit...
+long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG",
+  :convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "1<<#{unreachable_int}"}
+
+
+bignum_as_double_key = {:assert_key_type => ['T_BIGNUM', 'T_FIXNUM'], :convert_keys_from_ruby => "rb_big2dbl",
   :convert_keys_to_ruby => "rb_dbl2big", :key_type => "double", :unreachable_key => "1<<#{unreachable_int}",  # LODO is this a bignum value though?
   :extra_hash_params => ", hashdouble, eqdouble",
   :extra_set_code => "if(TYPE(set_this) == T_FIXNUM)\nset_this = rb_int2big(set_this);",
   :extra_get_code => "if(TYPE(get_this) == T_FIXNUM) \n get_this = rb_int2big(get_this);"
-}  # fixnum's can never be zero...
-
+}
 
 ruby_value = {:value_type => "VALUE", :english_value_type => "ruby"}
 int_value = {:assert_value_type => 'T_FIXNUM', :convert_values_from_ruby => "FIX2INT",
   :convert_values_to_ruby => "INT2FIX", :value_type => "int"}
-
-  #bignum_value = {:assert_value_type => 'T_BIGNUM', :convert_values_from_ruby => "rb_big2dbl",
-  #:convert_values_to_ruby => "rb_dbl2big", :value_type => "double", }
-
+long_value = {:assert_value_type => 'T_FIXNUM', :convert_values_from_ruby => "FIX2LONG",
+  :convert_values_to_ruby => "LONG2FIX", :value_type => "long"}
+  
+bignum_as_double_value = {:assert_value_type => ['T_BIGNUM', 'T_FIXNUM'], :convert_values_from_ruby => "rb_big2dbl",
+  :convert_values_to_ruby => "rb_dbl2big", :value_type => "double",
+  :extra_set_code2 => "if(TYPE(to_this) == T_FIXNUM)\nto_this = rb_int2big(to_this);"
+}
+  
+  
 init_funcs = []
 
-for key in [ruby_key, int_key, bignum_key] do
-  for value in [ruby_value, int_value] do
+for key in [ruby_key, int_key, bignum_as_double_key, long_key] do
+  for value in [ruby_value, int_value, long_value, bignum_as_double_value] do
     options = key.merge(value)
     for type in ['sparse', 'dense'] do
 
@@ -75,7 +84,8 @@ for key in [ruby_key, int_key, bignum_key] do
       assert_key_type2 = [options[:assert_key_type]].flatten[1]
       convert_values_from_ruby = options[:convert_values_from_ruby]
       convert_values_to_ruby = options[:convert_values_to_ruby]
-      assert_value_type = options[:assert_value_type]
+      assert_value_type = [options[:assert_value_type]].flatten[0]
+      assert_value_type2 = [options[:assert_value_type]].flatten[1]
 
       extra_hash_params = options[:extra_hash_params]
       
