@@ -103,14 +103,6 @@ describe "google_hash" do
     lambda { @subject['33']}.should raise_error(TypeError)
   end
 
-#  it "should allow for non numeric keys" do
-    # todo instantiate new type here...
-    # todo allow for floats, ints, symbols, strings [freeze 'em]
-    # wait are any of those actually useful tho?
-#    @subject['33'] = 33
-#    @subject['33'].should == 33
-#  end
-
   it "should return nil if key is absent" do
     @subject[33].should be_nil
   end
