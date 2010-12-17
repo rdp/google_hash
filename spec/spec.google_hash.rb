@@ -128,8 +128,8 @@ describe "google_hash" do
     GoogleHashDenseLongToLong.new
   end
 
-  it "should do 63 bit thingy for longs on 64 bit" do
-    pending "caring about 64 bit"
+  if OS.bits == 64
+    it "should disallow keys like 1<<40 for ints on 64 bit"
   end
 
   it "should have sets"
@@ -258,6 +258,23 @@ describe "google_hash" do
   it "should have sets, too, not just hashes"
   
   it "should skip GC when native to native" do
+    # tough to test...
+  end
+  
+  it "should allow for setting the right keys" do
+    all_classes = Object.constants.grep(/googlehash/i).map{|c| Object.const_get(c) }
+    all_classes.select{|c| c.to_s =~ /(int|long)to/i}.each{|c| 
+      p c
+      keys = [0, 1, -1, 1<<29]
+      if OS.bits == 64
+       keys << (1<<61)
+      end
+      keys.each{|k|
+        instance = c.new
+        instance[k] = 0
+        instance[k].should == 0
+      }
+    }
   end
 
 end
