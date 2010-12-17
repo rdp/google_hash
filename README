@@ -93,8 +93,6 @@ Could also add vectors, vector(pairs), priority queues, floats, native bignums, 
 
 This is meant to be one more tool in the rubyists toolbelt when trying to optimize speed-wise, and plans to expand to more types, but at least with this release it has a #each method.
 
-NB THAT 64 BIT USERS SHOULD USE THE LONG DATATYPES, NOT THE INT ONES until I have this cleared up (because a rubyint *is* a long, so it gets confused).
-
 Enjoy.
 
 -r

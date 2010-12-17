@@ -56,7 +56,7 @@ describe "google_hash" do
       k.should == 33
       v.should == 'abc'
     }
-    @subject.delete(33).should == 'abc'
+    @subject.delete(33).should == 'abc' # guess we don't do delete yet [?]
     @subject.length.should == 0
     @subject[33] = 'abc'
     @subject.length.should == 1
