@@ -22,16 +22,13 @@ if RUBY_VERSION < '1.9'
 end
 
 # create our files...
-# currently we're int only...hmm...
-# ltodo if I am using longs, this 31 needs to be a 63 on 64 bit machines...
-# if I ever use longs :)
-
-# my goal is...ruby friendly hashers
 
 if OS.bits == 32
   unreachable_int = 31
+  unreachable_long = 31
 else
-  unreachable_int = 63
+  unreachable_int = 31
+  unreachable_long = 63
 end
 
 ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :english_key_type => "ruby",
@@ -39,13 +36,13 @@ ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_ty
 int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT",
   :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :unreachable_key => "1<<#{unreachable_int}"}
   
-# "long" is useful on 64 bit...
-long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG",
-  :convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "1<<#{unreachable_int}"}
+# "long" is useful on 64 bit...since it can handle a wider range of incoming int's
 
+long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG",
+  :convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "1<<#{unreachable_long}"}
 
 bignum_as_double_key = {:assert_key_type => ['T_BIGNUM', 'T_FIXNUM'], :convert_keys_from_ruby => "rb_big2dbl",
-  :convert_keys_to_ruby => "rb_dbl2big", :key_type => "double", :unreachable_key => "1<<#{unreachable_int}",  # LODO is this a bignum value though?
+  :convert_keys_to_ruby => "rb_dbl2big", :key_type => "double", :unreachable_key => "1<<#{unreachable_long}",  # LODO is this a bignum value though? LODO TEST this key on 64 bit!
   :extra_hash_params => ", hashdouble, eqdouble",
   :extra_set_code => "if(TYPE(set_this) == T_FIXNUM)\nset_this = rb_int2big(FIX2INT(set_this));",
   :extra_get_code => "if(TYPE(get_this) == T_FIXNUM) \n get_this = rb_int2big(FIX2INT(get_this));"
