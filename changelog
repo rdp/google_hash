@@ -1,0 +1,3 @@
+0.7.0:
+  fix building in linux with newer GCC's, fix building in windows with broken system command (?)
+  bump internal google_hash version to 0.8.2

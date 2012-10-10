@@ -1,34 +1,77 @@
 The "google_hash" gem.
 
-Its goal. To boldly be faster than any hash hash before (cue star trek TNG theme).
+Its goal. To boldly be faster than any ruby hash has before (cue star trek TNG theme...).
 
 Well, really the goal is a better hash for Ruby, either one that is faster or more space efficient than ruby's default.  
-To attempt to accomplish this, we wrap the google sparse and dense hashes [1] and see how they perform.
+To attempt to accomplish this, this library wraps the google hash sparse and dense hashes [1], which seem to perform much better
+at least for the #each method.  It also creates some "specialized" hashes, for instance, those that take an integer for their key,
+for even better performance.
 
-Time results (an IntToInt hash, populating 500000 integers):
+ruby 1.9.3p194 (2012-04-20 revision 35410) [i686-linux]
+inserting 400000 objects
 
-1.9.1p376 (mingw):
+Ruby Standard Hash
+populate integer        0.324
+#each                   0.660
+lookup int              0.083
 
-Hash (Ruby default)
-0.359375 (populate)
-1.1875   (each)
+GoogleHashDenseIntToRuby
+populate integer        0.114
+#each                   0.050
+lookup int              0.080
 
-GoogleHashDenseIntToInt
-0.1875   (populate)
-0.078125 (each)
 
-GoogleHashSparseIntToInt (said to be very memory efficient).
-0.53125  (populate)
-0.078125 (each)
+GoogleHashSparseIntToInt # said to be much more memory efficient
+populate integer        0.242
+#each                   0.046
+lookup int              0.099
 
 These also use significantly less memory, because (if you specify IntToInt, it stores only 4 bytes per int, instead of Ruby's
 usual 20 bytes).  This also frees up Ruby so it doesn't hvae to garbage collect as much.  Yea!
 
-See also the results.txt file
+See also the results.txt file for more OS benchmark results.
 
-Usage:
+You can also run your own benchmarks to see how much faster it would be for you ("try before you buy"), see spec/benchmark.rb file.
 
-a = GoogleHashDenseRubyToRuby.new # like a normal Ruby hash, with slightly different performance characteristics, see benchmarks.txt
+Here is how it performs, if used as a "replacement" for the Ruby standard Hash:
+
+Ruby Standard Hash
+populate string         0.252
+populate symbol         0.109
+populate integer        0.324
+#each                   0.660
+lookup int              0.083
+lookup string           0.642
+lookup symbol           0.082
+
+GoogleHashDenseRubyToRuby
+populate string         0.312
+populate symbol         0.136
+populate integer        0.172
+#each                   0.077
+lookup int              0.102
+lookup string           0.271
+lookup symbol           0.098
+
+GoogleHashSparseRubyToRuby
+populate string         0.276
+populate symbol         0.102
+populate integer        0.428
+#each                   0.047
+lookup int              0.098
+lookup string           0.293
+lookup symbol           0.099
+
+basically slightly slower, except for an #each method that is *much* faster, and, as I said, RAM usage might be much better using this than the standard Ruby hash, esp. 
+for the case of the Sparse version.
+
+== Installation ==
+
+gem install google_hash (if on doze, you'll also first need the devkit installed).
+
+== usage ==
+
+a = GoogleHashDenseRubyToRuby.new # like a normal Ruby hash, with slightly different performance characteristics, see results.txt
 b = GoogleHashDenseIntToRuby.new # :int => Ruby -- keys are stored as "native" ints, values are ruby objects
 c = GoogleHashSparseIntToInt.new # :int => :int
 
@@ -70,18 +113,9 @@ b[4] = 'abc'
 b['abc'] = 'some complex object' 
 c[3] = 4 # all you can use are ints...
 
-Use them like "normal" hashes with the same method names.
+Use them like "normal" hashes, the method names try to map well.
 
-To learn if sparse or dense is right for you, check the documentation: 
-
-http://google-sparsehash.googlecode.com/svn/trunk/doc/index.html
-Dense is faster, sparse uses less memory.
-
-Installation:
-
-gem install google_hash (if on doze, you'll also first need the devkit installed).  You may need rubygems >= 1.3.6
-
-Note that if you use a type other than "Ruby" that you will be saving the values away as native values, so they will be using less space than a typical ruby object (which is 20 bytes), using 4 bytes instead of 20 (or instead of 40, in the case of 64 bit machines).  In addition to taking less memory, they are also stored separate from Ruby's heap, meaning that they should release stress on the GC, if you are spending much time in GC.
+== feedback ==
 
 If you have a desired use case that's not covered, let me know and I might well be able to code it up for you and add it.
 
