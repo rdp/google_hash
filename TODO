@@ -3,3 +3,6 @@ could be faster:
 http://code.google.com/p/ulib/wiki/AlignedHashingPerformance
 
 some specs fail [?]
+
+faster install, yikes!
+  single file for C code...remove unit test junk from sparsehash code?
