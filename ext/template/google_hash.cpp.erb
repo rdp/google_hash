@@ -1,6 +1,7 @@
 #include <iostream>
 #include <google/<%= type %>_hash_map>
 #include <ruby.h>
+#include <tr1/functional>
 
 // much code stolen shamelessly from lourens' cb gem
 
@@ -10,7 +11,7 @@ using std::endl;
 <% if OS.posix? %>
   #include <ext/hash_set>
 <% end %>
-using __gnu_cxx::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
+using std::tr1::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
 
 extern "C" {
 
