@@ -14,7 +14,9 @@ end
 
 def go num
   puts RUBY_DESCRIPTION
-  puts num
+  puts "inserting #{num} objects"
+  puts "remember that these may be more RAM space efficient than ruby's standard hash, as well, esp. the sparse hash, and that it has specialized hashes to deal with the case of just using integers for keys, etc."
+  puts "double is like float, long is like a large int"
   # get all existing
   all_google_hashmap_classes = Object.constants.grep(/Goog/).reject{|n| n == :GoogleHash}.map{|n| eval n.to_s}
   all = [Hash] + all_google_hashmap_classes
@@ -34,7 +36,7 @@ def go num
     subject = name.new
     meas( "populate symbol") { num.times {|n| subject[:abc] = 4} } rescue nil
 
-    meas( "populate int") { num.times {|n| subject[n] = 4}}
+    meas( "populate integer") { num.times {|n| subject[n] = 4}}
     meas("#each") { subject.each{|k, v| } }
 
     begin
@@ -51,5 +53,5 @@ def go num
   end
 end
 
-num = 200_000
+num = 400_000
 go num if $0 ==__FILE__
