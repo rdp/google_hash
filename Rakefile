@@ -1,3 +1,5 @@
+# to actually build it locally, run extconf.rb in /ext, then make
+
 require 'jeweler'
 Jeweler::Tasks.new do |gemspec|
     gemspec.name = "google_hash"
