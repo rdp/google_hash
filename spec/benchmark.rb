@@ -1,4 +1,4 @@
-require './google_hash'
+require '../ext/google_hash'
 require 'benchmark'
 require 'hitimes'
 
@@ -7,19 +7,25 @@ def measure
 end
 
 def meas string
- puts "% -23s" % string + measure { yield }.to_s
+ time_took = measure { yield }
+ puts "% -23s %.03f" % [string, time_took]
 end
 
 def go num
   puts num
   # get all existing
-  all = [Hash] + Object.constants.grep(/Goog/).reject{|n| n == :GoogleHash}.map{|n| eval n}
+  all_google_hashmap_classes = Object.constants.grep(/Goog/).reject{|n| n == :GoogleHash}.map{|n| eval n.to_s}
+  all = [Hash] + all_google_hashmap_classes
 
   for name in all do
     GC.start
     subject = name.new
     puts
-    puts name
+	if name == Hash
+      puts "Ruby Standard Hash"
+	else
+	  puts name
+	end
 
     subject = name.new
     meas( "populate string ") { num.times {|n| subject['abc'] = 4 } } rescue nil
@@ -38,7 +44,7 @@ def go num
 
       meas("lookup string")  { num.times {|n| subject['abc']}}
       meas( "lookup symbol" ) { num.times {|n| subject[:abc]}}
-    rescue
+    rescue # most don't support these...
     end
   end
 end

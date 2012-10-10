@@ -5,6 +5,7 @@ begin
   require 'spec/autorun'
 rescue LoadError
   require 'rspec' # rspec2
+  require 'rspec/autorun'
 end
 
 describe "google_hash" do

@@ -9,7 +9,7 @@ dir = Dir.pwd
 Dir.chdir 'sparsehash-1.8.1' do
   dir = dir + '/local_installed'
   # only if haven't already built it...except who installing a gem would ever have it already there? reinstallers?
-  unless File.directory(?dir)
+  unless File.directory?(dir)
     puts 'building local copy/version of google sparse/dense hash library'
     configure = "sh configure --prefix=#{dir}"
     puts configure
