@@ -6,14 +6,17 @@ require 'sane'
 # re-build google's lib locally...
 
 dir = Dir.pwd
-Dir.chdir 'sparsehash-1.5.2' do
+Dir.chdir 'sparsehash-1.8.1' do
   dir = dir + '/local_installed'
-  configure = "sh configure --prefix=#{dir}"
-  puts configure
-  # only if necessary
-  system configure unless File.directory?(dir)
-  system "make" unless File.directory?(dir)
-  system "make install" unless File.directory?(dir)
+  # only if haven't already built it...except who installing a gem would ever have it already there? reinstallers?
+  unless File.directory(?dir)
+    puts 'building local copy/version of google sparse/dense hash library'
+    configure = "sh configure --prefix=#{dir}"
+    puts configure
+    system configure
+    system "make"
+    system "make install"
+  end
 end
 
 $CFLAGS += " -I./local_installed/include "
