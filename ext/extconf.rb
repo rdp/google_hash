@@ -8,10 +8,12 @@ require 'sane'
 dir = Dir.pwd
 Dir.chdir 'sparsehash-1.5.2' do
   dir = dir + '/local_installed'
-  command = "sh configure --prefix=#{dir} && make && make install"
-  puts command
+  configure = "sh configure --prefix=#{dir}"
+  puts configure
   # only if necessary
-  system command unless File.directory?(dir)
+  system configure unless File.directory?(dir)
+  system "make" unless File.directory?(dir)
+  system "make install" unless File.directory?(dir)
 end
 
 $CFLAGS += " -I./local_installed/include "
