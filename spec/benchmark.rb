@@ -12,6 +12,7 @@ def meas string
 end
 
 def go num
+  puts RUBY_DESCRIPTION
   puts num
   # get all existing
   all_google_hashmap_classes = Object.constants.grep(/Goog/).reject{|n| n == :GoogleHash}.map{|n| eval n.to_s}
@@ -33,7 +34,7 @@ def go num
     meas( "populate symbol") { num.times {|n| subject[:abc] = 4} } rescue nil
 
     meas( "populate int") { num.times {|n| subject[n] = 4}}
-    meas("each") { subject.each{|k, v| } }
+    meas("#each") { subject.each{|k, v| } }
 
     begin
       subject = name.new
