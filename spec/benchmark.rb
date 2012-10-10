@@ -1,6 +1,7 @@
 require '../ext/google_hash'
 require 'benchmark'
-require 'hitimes'
+require 'hitimes' # gem
+require 'sane' # gem
 
 def measure
  Hitimes::Interval.measure { yield }

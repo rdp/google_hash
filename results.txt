@@ -6,31 +6,10 @@ http://pastie.org/752318
 
 http://pastie.org/752333
 
-
 ruby 1.8.6 mingw:
 
-GoogleHashSparse
-0.625   (populate)
-0.546875(each)
-
-GoogleHashDense
-0.234375(populate)
-0.421875(each)
-
-Hash
-0.5   (populate)
-0.53125 (each)
+https://gist.github.com/3867210
 
 1.8.6 linux:
 
-GoogleHashSparse
-0.305501222610474   (populate)
-0.78859806060791 (each)
-
-GoogleHashDense
-0.161197900772095   (populate)
-0.810173988342285 (each)
-
-Hash
-0.269010782241821   (populate)
-1.00644612312317 (each)
+https://gist.github.com/3867231

@@ -5,7 +5,7 @@ Its goal. To boldly be faster than any hash hash before (cue star trek TNG theme
 Well, really the goal is a better hash for Ruby, either one that is faster or more space efficient than ruby's default.  
 To attempt to accomplish this, we wrap the google sparse and dense hashes [1] and see how they perform.
 
-Time results (IntToInt hash, populating 500000 integers):
+Time results (an IntToInt hash, populating 500000 integers):
 
 1.9.1p376 (mingw):
 
@@ -17,7 +17,7 @@ GoogleHashDenseIntToInt
 0.1875   (populate)
 0.078125 (each)
 
-GoogleHashSparseIntToInt
+GoogleHashSparseIntToInt (said to be very memory efficient).
 0.53125  (populate)
 0.078125 (each)
 

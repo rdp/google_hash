@@ -8,6 +8,7 @@ Jeweler::Tasks.new do |gemspec|
     gemspec.email = "rogerdpack@gmail.com"
     gemspec.homepage = "http://github.com/rdp/ruby_google_hash"
     gemspec.authors = ["rogerdpack"]
-    gemspec.add_dependency('sane')
+    gemspec.add_dependency('sane') # real dependency as it's used for building the gem, in the extconf.rb file
+    gemspec.add_development_dependency('hitimes')
 end
 
