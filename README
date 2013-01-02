@@ -30,8 +30,7 @@ These also use less memory, because (if you specify IntToInt, it stores only 4 b
 usual 20 bytes), and usually less overall RAM for the hash store.
 This also frees up Ruby so it doesn't hvae to garbage collect as much.  Yea!
 
-For instance, with 1M objects, doing a GC takes this long:
-
+For instance, with 1M ints, doing a GC takes this long, comparatively:
 GoogleHashDenseIntToInt "dense took 0.002"
 "ruby hash took 0.103"
 
@@ -40,6 +39,8 @@ per GC.  And those garbage collects happen all the time, so this is meant to spe
 See also the results.txt file for more OS benchmark results.
 
 You can also run your own benchmarks to see how much faster it would be for you ("try before you buy"), see spec/benchmark.rb file.
+
+The best benchmark, of course, is to integrate and run it in your own app.
 
 Here is how it performs, if used as a "replacement" for the Ruby standard Hash:
 
@@ -53,7 +54,7 @@ lookup string           0.642
 lookup symbol           0.082
 
 GoogleHashDenseRubyToRuby
-populate string         0.312
+populate string         0.312 # slower here
 populate symbol         0.136
 populate integer        0.172
 #each                   0.077
