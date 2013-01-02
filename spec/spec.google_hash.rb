@@ -269,16 +269,19 @@ describe "google_hash" do
   
   it "should allow for setting the right keys" do
     all_classes = get_all_classes
-    all_classes.select{|c| c.to_s =~ /(int|long)to/i}.each{|c| 
+    all_classes.select{|c| c.to_s =~ /(int|long|double)to/i}.each{|c| 
       p c
       keys = [0, 1, -1, 1<<29]
       if OS.bits == 64
-       keys << (1<<61)
+        keys << (1<<61)
       end
       keys.each{|k|
         instance = c.new
+		instance[k].should == nil
         instance[k] = 0
+        instance[k-1] = 2
         instance[k].should == 0
+        instance[k-1].should == 2
       }
     }
   end
