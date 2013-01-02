@@ -170,7 +170,7 @@ static void mark_hash_map_values(RCallback *incoming) {
 }
 
 static void free_hash_callback(RCallback* cb) {
-  //  delete cb->hash_map;
+  delete cb->hash_map; // I had this line commented out one? huh?
 }
 
 static VALUE callback_alloc _((VALUE)); // what does this line do?
