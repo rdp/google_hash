@@ -48,7 +48,7 @@ long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG
 
 bignum_as_double_key = {:assert_key_type => ['T_BIGNUM', 'T_FIXNUM'], :convert_keys_from_ruby => "rb_big2dbl",
   :convert_keys_to_ruby => "rb_dbl2big", :key_type => "double", :unreachable_key => "1<<#{unreachable_long}",  # LODO is this a bignum value though? LODO TEST this key on 64 bit!
-  :extra_hash_params => ", hashdouble, eqdouble",
+  #:extra_hash_params => ", hashdouble, eqdouble", # provided natively?
   :extra_set_code => "if(TYPE(set_this) == T_FIXNUM)\nset_this = rb_int2big(FIX2INT(set_this));",
   :extra_get_code => "if(TYPE(get_this) == T_FIXNUM) \n get_this = rb_int2big(FIX2INT(get_this));"
 }
