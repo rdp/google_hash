@@ -1,0 +1,1 @@
+ruby -C ../spec spec.google_hash.rb
