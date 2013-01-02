@@ -21,13 +21,21 @@ populate integer        0.114
 lookup int              0.080
 
 
-GoogleHashSparseIntToInt # said to be much more memory efficient
+GoogleHashSparseIntToInt # said to be more memory efficient
 populate integer        0.242
 #each                   0.046
 lookup int              0.099
 
-These also use significantly less memory, because (if you specify IntToInt, it stores only 4 bytes per int, instead of Ruby's
-usual 20 bytes).  This also frees up Ruby so it doesn't hvae to garbage collect as much.  Yea!
+These also use less memory, because (if you specify IntToInt, it stores only 4 bytes per int, instead of Ruby's
+usual 20 bytes), and usually less overall RAM for the hash store.
+This also frees up Ruby so it doesn't hvae to garbage collect as much.  Yea!
+
+For instance, with 1M objects, doing a GC takes this long:
+
+GoogleHashDenseIntToInt "dense took 0.002"
+"ruby hash took 0.103"
+
+per GC.  And those garbage collects happen all the time, so this is meant to speed those up.
 
 See also the results.txt file for more OS benchmark results.
 
