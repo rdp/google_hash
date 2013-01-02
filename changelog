@@ -1,3 +1,8 @@
+0.8.0:
+  add a delete method for a few classes
+  actually delete the hashmaps when the object is collected by Ruby, instead of leaking
+  hopefully work with more versions of GCC
+
 0.7.0:
   fix building in linux with newer GCC's, fix building in windows with broken system command (?)
   bump internal google_hash version to 0.8.2
