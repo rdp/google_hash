@@ -173,32 +173,33 @@ static void free_hash_callback(RCallback* cb) {
   delete cb->hash_map; // I had this line commented out one? huh?
 }
 
-static VALUE callback_alloc _((VALUE)); // what does this line do?
-
 static VALUE
 callback_alloc( VALUE klass )
 {
     RCallback* cbs;
-    VALUE current_instance = Data_Make_Struct(klass, RCallback, mark_hash_map_values, free_hash_callback, cbs);
+    VALUE current_instance = Data_Make_Struct(klass, RCallback, mark_hash_map_values, free_hash_callback, cbs); // XXXX the last parameter is just a pointer? huh?
     
     cbs->hash_map = new <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >();
-    <% if unreachable_key && type == 'dense' %>
-       cbs->hash_map->set_empty_key(<%= unreachable_key %>);
+    <% if type == 'dense' %> 
+       // cbs->hash_map->set_deleted_key(<%= unreachable_key %>);
+       // also needs another one ?
+	   cbs->hash_map->set_empty_key(<%= unreachable_key %>);
     <% end %> 
     
+    <% if type == 'sparse' %> 
+       cbs->hash_map->set_deleted_key(<%= unreachable_key %>);
+    <% end %>
+	
     return current_instance;
 }
 
-
 #define GetCallbackStruct(obj)	(Check_Type(obj, T_DATA), (RCallback*)DATA_PTR(obj))
-
 
 static VALUE
 rb_mri_hash_new(VALUE freshly_created) {
-
   // we don't actually have anything special to do here...
   // unless someone subclassed us or something [?]
-  // ltodo test
+  // XXXX test
   return freshly_created;
 }
 
@@ -227,8 +228,8 @@ static VALUE rb_ghash_set(VALUE cb, VALUE set_this, VALUE to_this) {
   return to_this; // ltodo test that it returns value...
 }
 
-static VALUE rb_ghash_get(VALUE cb, VALUE get_this, int just_check_for_presence) {
-  // TODO optionally not type check assert anywhere [?]
+static VALUE rb_ghash_get(VALUE cb, VALUE get_this, int just_check_for_presence, int delete_it) {
+  // TODO optionally not type check assert anymore [if it slows down computationally, that is...]
   <% if assert_key_type %>
     if(!(TYPE(get_this) == <%= assert_key_type %>)) {
        <%= "if(!(TYPE(get_this) == #{assert_key_type2}))" if assert_key_type2 %>
@@ -240,26 +241,38 @@ static VALUE rb_ghash_get(VALUE cb, VALUE get_this, int just_check_for_presence)
   
   <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >::iterator out = cbs->hash_map->find(<%= convert_keys_from_ruby %>(get_this));
   
-  if(out == cbs->hash_map->end()) { // not found...hmm...is this False, though?
+  if(out == cbs->hash_map->end()) { // key not found in hashmap
     if(just_check_for_presence)
       return Qfalse;
-    else
+    else {
+	  // key not found, or delete requested and key not found, return nil
       return Qnil;
+	}
   } else {
     if(just_check_for_presence)
       return Qtrue;
-    else
-      return <%= convert_values_to_ruby %>(out->second);
+    else {
+      VALUE out2 = <%= convert_values_to_ruby %>(out->second);
+	  if(delete_it) {
+	    cbs->hash_map->erase(out);
+		// still return it
+	  }
+	  return out2;
+	}
   }
   
 }
 
 static VALUE rb_ghash_get_value(VALUE cb, VALUE get_this) {
-  return rb_ghash_get(cb, get_this, 0);
+  return rb_ghash_get(cb, get_this, 0, 0);
 }
 
 static VALUE rb_ghash_get_present(VALUE cb, VALUE get_this) {
-  return  rb_ghash_get(cb, get_this, 1);
+  return rb_ghash_get(cb, get_this, 1, 0);
+}
+
+static VALUE rb_ghash_delete(VALUE cb, VALUE delete_this) {
+  return rb_ghash_get(cb, delete_this, 0, 1);
 }
 
 static VALUE rb_ghash_size(VALUE cb) {
@@ -267,6 +280,11 @@ static VALUE rb_ghash_size(VALUE cb) {
   return INT2FIX(incoming->hash_map->size());
 }
 
+static VALUE rb_ghash_clear(VALUE cb) {
+  RCallback* incoming = GetCallbackStruct(cb);
+  incoming->hash_map->clear();
+  return cb;
+}
 
 static VALUE rb_ghash_each(VALUE cb) {
     RCallback* incoming = GetCallbackStruct(cb);
@@ -325,10 +343,14 @@ void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
     rb_define_method(rb_cGoogleHashLocal, "initialize", RUBY_METHOD_FUNC(rb_mri_hash_new), 0); 
     rb_define_method(rb_cGoogleHashLocal, "[]=", RUBY_METHOD_FUNC(rb_ghash_set), 2); 
     rb_define_method(rb_cGoogleHashLocal, "[]", RUBY_METHOD_FUNC(rb_ghash_get_value), 1); 
-    rb_define_method(rb_cGoogleHashLocal, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0);
+    rb_define_method(rb_cGoogleHashLocal, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0);	
     rb_define_method(rb_cGoogleHashLocal, "values", RUBY_METHOD_FUNC(rb_ghash_values), 0); 
     rb_define_method(rb_cGoogleHashLocal, "keys", RUBY_METHOD_FUNC(rb_ghash_keys), 0); 
     rb_define_method(rb_cGoogleHashLocal, "has_key?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
+    <% if type == 'sparse' %>  // only ones its safe on for now, till I get it figured out...
+      rb_define_method(rb_cGoogleHashLocal, "delete", RUBY_METHOD_FUNC(rb_ghash_delete), 1);
+      rb_define_method(rb_cGoogleHashLocal, "clear", RUBY_METHOD_FUNC(rb_ghash_clear), 0);	
+	<% end %>
     rb_define_method(rb_cGoogleHashLocal, "key?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
     rb_define_method(rb_cGoogleHashLocal, "member?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
     rb_define_method(rb_cGoogleHashLocal, "include?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);

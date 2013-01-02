@@ -1,7 +1,4 @@
-rm *.cpp 
-rm *.o
-rm *.so
-rm *.def
+call clean.bat
 ruby extconf.rb
 call make
 spec.bat

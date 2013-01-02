@@ -37,7 +37,8 @@ else
 end
 
 ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :english_key_type => "ruby",
-  :extra_hash_params => ", hashrb, eqrb", :unreachable_key => "current_instance"} # TODO NULL is false here?
+  :extra_hash_params => ", hashrb, eqrb", :unreachable_key => "current_instance"}
+  
 int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT",
   :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :unreachable_key => "1<<#{unreachable_int}"}
   
@@ -46,9 +47,11 @@ int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT",
 long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG",
   :convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "1<<#{unreachable_long}"}
 
+# currently "big numbers" we handle by storing them as a double
+# TODO floats [does ruby do real doubles underneath?] too
 bignum_as_double_key = {:assert_key_type => ['T_BIGNUM', 'T_FIXNUM'], :convert_keys_from_ruby => "rb_big2dbl",
   :convert_keys_to_ruby => "rb_dbl2big", :key_type => "double", :unreachable_key => "1<<#{unreachable_long}",  # LODO is this a bignum value though? LODO TEST this key on 64 bit!
-  #:extra_hash_params => ", hashdouble, eqdouble", # provided natively?
+  #:extra_hash_params => ", hashdouble, eqdouble", # these methods provided natively these days?
   :extra_set_code => "if(TYPE(set_this) == T_FIXNUM)\nset_this = rb_int2big(FIX2INT(set_this));",
   :extra_get_code => "if(TYPE(get_this) == T_FIXNUM) \n get_this = rb_int2big(FIX2INT(get_this));"
 }
@@ -63,8 +66,7 @@ bignum_as_double_value = {:assert_value_type => ['T_BIGNUM', 'T_FIXNUM'], :conve
   :convert_values_to_ruby => "rb_dbl2big", :value_type => "double",
   :extra_set_code2 => "if(TYPE(to_this) == T_FIXNUM)\nto_this = rb_int2big(FIX2INT(to_this));"
 }
-  
-  
+
 init_funcs = []
 
 for key in [ruby_key, int_key, bignum_as_double_key, long_key] do

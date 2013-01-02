@@ -49,24 +49,44 @@ describe "google_hash" do
   
   it "should have all the methods desired" do
     # guess these could all be tests, themselves...
-    @subject.each{}
-    @subject[33] = 'abc'
+    @subject.each{|k, v| raise}
+	@subject[33] = 34
     @subject.length.should == 1
-    @subject.each{}
+	sum = 0
+    @subject.each{|k, v| sum += k; sum += v}
+	sum.should == (33+34)
+    @subject[33] = 'abc'
     @subject.each{|k, v|
       k.should == 33
       v.should == 'abc'
     }
-    @subject.delete(33).should == 'abc' # guess we don't do delete yet [?]
-    @subject.length.should == 0
-    @subject[33] = 'abc'
-    @subject.length.should == 1
+	
     @subject.clear
+	@subject.length.should == 0
+	@subject.keys.should == []
+    @subject[33] = 'abc'
+    @subject.delete(33).should == 'abc' # we don't actually have these methods yet :)
     @subject.length.should == 0
+    @subject[33] = 'def'
+    @subject[33].should == 'def'	
   end
   
-  it 'should not be able to set the absent key for double' do
-    fail
+  pending "they should all have a clear method" do
+    for kls in get_all_classes
+	  kls.new.clear
+	end  
+  end
+  
+  it 'should not be able to set the absent key for double' do  
+    if OS.bits == 32
+      unreachable_int = 31
+      unreachable_long = 31
+    else
+      unreachable_int = 31
+      unreachable_long = 63  
+    end
+    proc { GoogleHashSparseIntToInt[1<<unreachable_int] = 3 } # should raise...
+    proc { GoogleHashSparseLongToInt[1<<unreachable_long] = 3 }
   end
 
   def populate(a)
@@ -122,11 +142,10 @@ describe "google_hash" do
   end
 
   if OS.bits == 64
-    it "should disallow keys like 1<<40 for ints on 64 bit"
+    it "should disallow keys like 1<<40 for ints on 64 bit, since they'll be lost"
   end
 
-  it "should have sets"
-  it "should have Set#each"
+  it "should have sets, Set#each, etc."
 
   it "Set should have #combination calls" do
     @subject[33] = 34
@@ -177,7 +196,7 @@ describe "google_hash" do
   end
   
   it "should not leak" do
-    pending 'something that might leak'
+    pending 'finding a test that actually shows a leak' # or does this one do the job?
     a = GoogleHashDenseIntToInt.new
     100_000.times {
       a[1] = 1
@@ -194,11 +213,12 @@ describe "google_hash" do
     a[1].should == 1
   end
 
-  it "should do float values as doubles" do
-    pending "interest in floats"
-    a = GoogleHashDenseDoubleToInt.new
-    a[1.0] = 1
-    a[1.0].should == 1
+  it "should do float values as doubles, too, not just big numbers" do
+    pending "request" do
+      a = GoogleHashDenseDoubleToInt.new
+      a[1.0] = 1
+      a[1.0].should == 1
+	end
   end
   
   it "should do bignum to doubles et al" do
@@ -220,25 +240,16 @@ describe "google_hash" do
     a[10000000000000000000] = 'abc'
   end
   
-  it 'should be able to delete bignums without leaking' do
-    pending
-    a = GoogleHashDenseBignumToBignum.new
-    100_000.times {
-      a[10000000000000000000] = 1
-      a.size.should == 1
-      a.delete[10000000000000000000]
-      a.size.should == 0
-    }
-    assert OS.rss_bytes < 100_000
-  end
+  it "should have an Enumerator return for values, keys [?] instead of an array?"
   
-  it "should have an Enumerator for values, keys, an on demand, getNext enumerator object..."
-  
-  it "should have a block access for values, keys" do
-    pending "interest"
-    @a[3] = 4
-    a.each_value {}
-    a.each_key {}
+  it "should have a block access for just values, or just keys" do
+    pending "interest" do
+      @subject[3] = 4
+	  sum = 0
+      @subject.each_value {|v| sum += v}
+      @subject.each_key {|k| sum += k}
+	  sum.should == 7
+	end
   end
   
   it "should have nice inspect" do
@@ -248,14 +259,16 @@ describe "google_hash" do
     a.inspect.should == "GoogleHashSparseIntToRuby {3=>4,4=>5}"
   end
   
-  it "should have sets, too, not just hashes"
-  
   it "should skip GC when native to native" do
-    # tough to test...
+    pending 'caring, get from gc_bench.rb'
+  end
+  
+  def get_all_classes
+    Object.constants.grep(/googlehash/i).map{|c| Object.const_get(c) }
   end
   
   it "should allow for setting the right keys" do
-    all_classes = Object.constants.grep(/googlehash/i).map{|c| Object.const_get(c) }
+    all_classes = get_all_classes
     all_classes.select{|c| c.to_s =~ /(int|long)to/i}.each{|c| 
       p c
       keys = [0, 1, -1, 1<<29]
