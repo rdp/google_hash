@@ -1,5 +1,5 @@
 0.8.0:
-  add a delete method for a few classes
+  add a delete method for the Sparse** classes
   actually delete the hashmaps when the object is collected by Ruby, instead of leaking
   hopefully work with more versions of GCC
 
