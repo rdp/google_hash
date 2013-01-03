@@ -195,16 +195,20 @@ describe "google_hash" do
     a[10000000000000000000].should == 1
   end
   
-  it "should not leak" do
-    pending 'finding a test that actually shows a leak' # or does this one do the job?
-    a = GoogleHashDenseIntToInt.new
+  it "should not leak [?]" do
+    a = GoogleHashSparseIntToInt.new
     100_000.times {
       a[1] = 1
       a[1]
       a.each{|k, v|}
       a.delete(1) rescue nil
     }
+	a.length.should == 0
     OS.rss_bytes.should be < 25_000_000
+  end
+  
+  it "should do delete from dense" do
+    GoogleHashDenseDoubleToInt.new.delete('a').should == nil
   end
   
   it "should do int values as doubles" do
