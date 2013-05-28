@@ -86,7 +86,7 @@ c = GoogleHashSparseIntToInt.new # :int => :int
 
 Here's the full list of availables:
 
->> Object.constants.each{|k k if k =~ /google/i }
+>> puts Object.constants.select{|k| k =~ /google/i}.sort; nil
 
 GoogleHashDenseLongToLong
 GoogleHashSparseLongToLong
