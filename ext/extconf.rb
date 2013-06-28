@@ -20,6 +20,7 @@ Dir.chdir 'sparsehash-1.8.1' do
 end
 
 $CFLAGS += " -I./local_installed/include "
+$CPPFLAGS += " -I./local_installed/include "
 
 if RUBY_VERSION < '1.9'
   # appears to link using gcc on 1.8 [mingw at least]
