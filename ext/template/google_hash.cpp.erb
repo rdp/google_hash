@@ -3,12 +3,17 @@
 #include <ruby.h>
 
 #if defined(HAVE_TR1_FUNCTIONAL)
-# include <tr1/functional>
-using std::tr1::hash;  // or __gnu_cxx::hash, or maybe tr1::hash, depending on your OS
+ #include <tr1/functional>
+ using std::tr1::hash;
+#elif defined(FUNCTIONAL)
+ #include <functional>
+ using std::hash; // ??
 #else
+ // punt!
  using __gnu_cxx::hash; 
 #endif
-// much code stolen shamelessly from lourens' cb gem
+
+// much code stolen shamelessly from lourens' cb gem...
 
 using google::<%= type %>_hash_map;      // namespace where class lives by default
 
