@@ -107,4 +107,7 @@ end
 template = ERB.new(File.read('template/main.cpp.erb'))
 File.write 'main.cpp', template.result(binding)
 
+Config::CONFIG['CPP'] = "g++ -E" # else cannot check for c++ headers? huh wuh?
+have_header('tr1/functional')
+
 create_makefile('google_hash')
