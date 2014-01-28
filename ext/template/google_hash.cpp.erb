@@ -7,7 +7,7 @@
  using std::tr1::hash;
 #elif defined(FUNCTIONAL)
  #include <functional>
- using std::hash; // ??
+ using std::tr1::hash; // ?? llvm...
 #else
  // punt!
  using __gnu_cxx::hash; 
