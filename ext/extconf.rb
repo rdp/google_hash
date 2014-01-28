@@ -111,7 +111,7 @@ Config::CONFIG['CPP'] = "g++ -E" # else cannot check for c++ headers? huh wuh?
 have_header('tr1/functional')
 
 if have_header('functional')
-  $CPPFLAGS += " -std=c++11 -stdlib=libc++ " // LLVM, no idea what I'm doing here...
+  $CPPFLAGS += " -std=c++11 -stdlib=libc++ " # LLVM, no idea what I'm doing here...
 end
 
 create_makefile('google_hash')
