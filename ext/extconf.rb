@@ -110,7 +110,7 @@ File.write 'main.cpp', template.result(binding)
 Config::CONFIG['CPP'] = "g++ -E" # else cannot check for c++ headers? huh wuh?
 have_header('tr1/functional')
 
-if have_header('functional')
+if have_header('functional') && OS.x?
   $CPPFLAGS += " -std=c++11 -stdlib=libc++ " # LLVM, no idea what I'm doing here...
 end
 
