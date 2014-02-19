@@ -5,7 +5,7 @@
 #if defined(HAVE_TR1_FUNCTIONAL)
  #include <tr1/functional>
  using std::tr1::hash;
-#elif defined(FUNCTIONAL)
+#elif defined(HAVE_FUNCTIONAL)
  #include <functional>
  using std::tr1::hash; // ?? llvm...
 #else
