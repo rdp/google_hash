@@ -1,6 +1,6 @@
 # to actually build it locally, run extconf.rb in /ext, then make
 
-require 'jeweler'
+require 'jeweler' # 1.8.8 also libxml2-dev package on linux
 Jeweler::Tasks.new do |gemspec|
     gemspec.name = "google_hash"
     gemspec.summary = "Ruby wrappers to the google hash library"

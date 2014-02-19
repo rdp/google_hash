@@ -113,7 +113,7 @@ GoogleHashSparseRubyToInt
 GoogleHashDenseRubyToRuby
 GoogleHashSparseRubyToRuby
 
-(long is "better" than int on 64 bit systems only)
+(long is "better" than int on 64 bit systems only, on 32 bit it's the same)
 
 and how to use them:
 
@@ -128,7 +128,7 @@ Use them like "normal" hashes, the method names try to map well.
 
 If you have a desired use case that's not covered, let me know and I might well be able to code it up for you and add it.
 
-ex: currently it uses longs internally instead of ints--if you want ints or chars or what not, let me know.
+ex: currently it uses longs internally instead of ints--if you want ints or strings added, let me know.
 
 if you want it to remember insertion order, I could do that, too, or native "store away" strings/bignums, whatever.
 
