@@ -4,9 +4,8 @@ require 'rubygems'
 require 'sane'
 
 # re-build google's lib locally...
-
 dir = Dir.pwd
-Dir.chdir 'sparsehash-1.8.1' do
+Dir.chdir 'sparsehash-2.0.2' do
   dir = dir + '/local_installed'
   # only if haven't already built it...except who installing a gem would ever have it already there? reinstallers?
   unless File.directory?(dir)
@@ -23,7 +22,7 @@ $CFLAGS += " -I./local_installed/include "
 $CPPFLAGS += " -I./local_installed/include "
 
 if RUBY_VERSION < '1.9'
-  # appears to link using gcc on 1.8 [mingw at least]
+  # appears to need this to link using gcc on 1.8 [mingw at least]
   $LDFLAGS += " -lstdc++ "
 end
 
@@ -110,8 +109,8 @@ File.write 'main.cpp', template.result(binding)
 Config::CONFIG['CPP'] = "g++ -E" # else cannot check for c++ headers? huh wuh?
 have_header('tr1/functional')
 
-if have_header('functional') && OS.x?
-  $CPPFLAGS += " -std=c++11 -stdlib=libc++ " # LLVM, no idea what I'm doing here...
+if have_header('functional') && OS.x? && !have_header('tr1/functional')
+  $CPPFLAGS += " -std=c++11 -stdlib=libc++ " # LLVM, updated to not have tr1 anymore, no idea what I'm doing here...
 end
 
 create_makefile('google_hash')
