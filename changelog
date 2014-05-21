@@ -1,3 +1,6 @@
+0.8.1:
+  work with OS X newer compilers
+
 0.8.0:
   add a delete method for the Sparse** classes
   actually delete the hashmaps when the object is collected by Ruby, instead of leaking
