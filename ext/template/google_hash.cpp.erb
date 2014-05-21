@@ -1,15 +1,16 @@
+#include <ciso646> // detect std::lib
 #include <iostream>
 #include <google/<%= type %>_hash_map>
 #include <ruby.h>
 
-#if defined(HAVE_TR1_FUNCTIONAL)
- #include <tr1/functional>
- using std::tr1::hash;
-#elif defined(HAVE_FUNCTIONAL)
+#ifdef _LIBCPP_VERSION // https://bugs.launchpad.net/libmemcached/+bug/1216521/comments/2
  #include <functional>
  using std::hash; // llvm gets here [mac]
+#elif defined(HAVE_TR1_FUNCTIONAL)
+ #include <tr1/functional>
+ using std::tr1::hash;
 #else
- // punt!
+ // punt! older gcc's
  using __gnu_cxx::hash; 
 #endif
 
