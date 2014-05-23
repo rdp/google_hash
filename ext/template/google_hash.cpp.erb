@@ -190,9 +190,9 @@ callback_alloc( VALUE klass )
     
     cbs->hash_map = new <%= type %>_hash_map< <%= key_type %>, <%= value_type %> <%= extra_hash_params %> >();
     <% if type == 'dense' %> 
-       // cbs->hash_map->set_deleted_key(<%= unreachable_key %>);
-       // also needs another one ?
-	   cbs->hash_map->set_empty_key(<%= unreachable_key %>);
+      // needs both empty key and deleted keys [and different] for deletes...
+      cbs->hash_map->set_empty_key(<%= unreachable_key %>);
+      cbs->hash_map->set_deleted_key(<%= unreachable_key %>-1); // hope this is unreachable [?]
     <% end %> 
     
     <% if type == 'sparse' %> 
@@ -356,10 +356,8 @@ void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
     rb_define_method(rb_cGoogleHashLocal, "values", RUBY_METHOD_FUNC(rb_ghash_values), 0); 
     rb_define_method(rb_cGoogleHashLocal, "keys", RUBY_METHOD_FUNC(rb_ghash_keys), 0); 
     rb_define_method(rb_cGoogleHashLocal, "has_key?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
-    <% if type == 'sparse' %>  // only ones its safe on for now, till I get it figured out...
-      rb_define_method(rb_cGoogleHashLocal, "delete", RUBY_METHOD_FUNC(rb_ghash_delete), 1);
-      rb_define_method(rb_cGoogleHashLocal, "clear", RUBY_METHOD_FUNC(rb_ghash_clear), 0);	
-	<% end %>
+    rb_define_method(rb_cGoogleHashLocal, "delete", RUBY_METHOD_FUNC(rb_ghash_delete), 1);
+    rb_define_method(rb_cGoogleHashLocal, "clear", RUBY_METHOD_FUNC(rb_ghash_clear), 0);	
     rb_define_method(rb_cGoogleHashLocal, "key?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
     rb_define_method(rb_cGoogleHashLocal, "member?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
     rb_define_method(rb_cGoogleHashLocal, "include?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);

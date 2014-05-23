@@ -281,7 +281,7 @@ describe "google_hash" do
       end
       keys.each{|k|
         instance = c.new
-		instance[k].should == nil
+		    instance[k].should == nil
         instance[k] = 0
         instance[k-1] = 2
         instance[k].should == 0
