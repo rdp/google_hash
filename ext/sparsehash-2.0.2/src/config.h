@@ -59,7 +59,7 @@
 #define HAVE_STRING_H 1
 
 /* Define to 1 if you have the <sys/resource.h> header file. */
-#define HAVE_SYS_RESOURCE_H 1
+/* #undef HAVE_SYS_RESOURCE_H */
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
@@ -71,7 +71,7 @@
 #define HAVE_SYS_TYPES_H 1
 
 /* Define to 1 if you have the <sys/utsname.h> header file. */
-#define HAVE_SYS_UTSNAME_H 1
+/* #undef HAVE_SYS_UTSNAME_H */
 
 /* Define to 1 if the system has the type `uint16_t'. */
 #define HAVE_UINT16_T 1
@@ -83,7 +83,7 @@
 #define HAVE_UNORDERED_MAP 1
 
 /* Define to 1 if the system has the type `u_int16_t'. */
-#define HAVE_U_INT16_T 1
+/* #undef HAVE_U_INT16_T */
 
 /* Define to 1 if the system has the type `__uint16'. */
 /* #undef HAVE___UINT16 */
