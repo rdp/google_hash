@@ -71,12 +71,6 @@ describe "google_hash" do
     @subject[33].should == 'def'	
   end
   
-  pending "they should all have a clear method" do
-    for kls in get_all_classes
-	  kls.new.clear
-	end  
-  end
-  
   it 'should not be able to set the absent key for double' do  
     if OS.bits == 32
       unreachable_int = 31
@@ -131,10 +125,6 @@ describe "google_hash" do
   it "should work with 0's" do
    @subject[0] = 'abc'
    @subject[0].should == 'abc'
-  end
-
-  it "should do BigNums" do
-    pending "if necessary"
   end
 
   it "should do longs" do
@@ -239,7 +229,7 @@ describe "google_hash" do
   
   it "should allow for storing true bignums" do
     pending
-    fail 'same as above plus the following:'
+    'TODO: same as above plus the following:'
     a = GoogleHashDenseBignumToRuby.new
     a[10000000000000000000] = 'abc'
   end
@@ -292,6 +282,10 @@ describe "google_hash" do
           # delete should not affect neighbors
           instance[k-1].should == 2
           instance[k+1].should == 3
+          # test #clear too here, why not? :)
+          instance.clear
+          instance[k-1].should == nil
+          instance[k+1].should == nil
         end
       }
     }
