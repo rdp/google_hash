@@ -29,28 +29,28 @@ end
 # create our files...
 
 if OS.bits == 32
-  unreachable_int = 31
-  unreachable_long = 31
+  unreachable_int = "1<<31"
+  unreachable_long = "1<<31"
 else
-  unreachable_int = 31
-  unreachable_long = 63
+  unreachable_int = "1<<31"
+  unreachable_long = "1<<63"
 end
 
 ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :english_key_type => "ruby",
-  :extra_hash_params => ", hashrb, eqrb", :unreachable_key => "current_instance"}
+  :extra_hash_params => ", hashrb, eqrb", :unreachable_key => "current_instance"}  # TODO unreachable -> NULL instead?
   
 int_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2INT",
-  :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :unreachable_key => "1<<#{unreachable_int}"}
+  :convert_keys_to_ruby => "INT2FIX", :key_type => "int", :unreachable_key => "#{unreachable_int}"}
   
 # "long" is useful on 64 bit...since it can handle a wider range of incoming int's
 
 long_key = {:assert_key_type => 'T_FIXNUM', :convert_keys_from_ruby => "FIX2LONG",
-  :convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "1<<#{unreachable_long}"}
+  :convert_keys_to_ruby => "LONG2FIX", :key_type => "long", :unreachable_key => "#{unreachable_long}"}
 
 # currently "big numbers" we handle by storing them as a double
 # TODO floats [does ruby do real doubles underneath?] too
 bignum_as_double_key = {:assert_key_type => ['T_BIGNUM', 'T_FIXNUM'], :convert_keys_from_ruby => "rb_big2dbl",
-  :convert_keys_to_ruby => "rb_dbl2big", :key_type => "double", :unreachable_key => "1<<#{unreachable_long}",  # LODO is this a bignum value though? LODO TEST this key on 64 bit!
+  :convert_keys_to_ruby => "rb_dbl2big", :key_type => "double", :unreachable_key => "#{unreachable_long}",  # LODO is this a bignum value though? LODO TEST this key on 64 bit!
   #:extra_hash_params => ", hashdouble, eqdouble", # these methods provided natively these days?
   :extra_set_code => "if(TYPE(set_this) == T_FIXNUM)\nset_this = rb_int2big(FIX2INT(set_this));",
   :extra_get_code => "if(TYPE(get_this) == T_FIXNUM) \n get_this = rb_int2big(FIX2INT(get_this));"
