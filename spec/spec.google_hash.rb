@@ -208,7 +208,7 @@ describe "google_hash" do
   end
   
   it "should do delete from dense" do
-    GoogleHashDenseDoubleToInt.new.delete('a').should == nil
+    GoogleHashDenseDoubleToInt.new.delete(0).should == nil
   end
   
   it "should do int values as doubles" do
@@ -282,9 +282,16 @@ describe "google_hash" do
           instance = c.new
           instance[k].should == nil
           instance[k] = 0
+          instance[k+1] = 3
           instance[k-1] = 2
           instance[k].should == 0
           instance[k-1].should == 2
+          instance[k+1].should == 3
+          instance.delete k
+          instance[k].should == nil
+          # delete should not affect neighbors
+          instance[k-1].should == 2
+          instance[k+1].should == 3
         end
       }
     }

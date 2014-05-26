@@ -192,7 +192,8 @@ callback_alloc( VALUE klass )
     <% if type == 'dense' %> 
       // needs both empty key and deleted keys [and different] for deletes...
       cbs->hash_map->set_empty_key(<%= unreachable_key %>);
-      cbs->hash_map->set_deleted_key((<%= unreachable_key %>)+1); // hope this is also typically unusable from ruby land [?]
+      // in th eory could also call set_deleted_key "anytime" ...
+      cbs->hash_map->set_deleted_key((<%= unreachable_key %>)-1); // hope this is also typically unreachable from ruby land [?]
     <% elsif type == 'sparse' %> 
        cbs->hash_map->set_deleted_key(<%= unreachable_key %>);
     <% end %>
