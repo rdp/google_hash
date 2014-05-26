@@ -267,11 +267,10 @@ describe "google_hash" do
     pending 'caring, get from gc_bench.rb'
   end
   
-  def get_all_classes
+  def self.get_all_classes
     Object.constants.grep(/googlehash/i).map{|c| Object.const_get(c) }
   end
   
-  it "should allow for setting the right keys" do
     all_classes = get_all_classes
     all_classes.select{|c| c.to_s =~ /(int|long|double)to/i}.each{|c| 
       p c
@@ -280,19 +279,15 @@ describe "google_hash" do
         keys << (1<<61)
       end
       keys.each{|k|
-      begin
-        instance = c.new
-        instance[k].should == nil
-        instance[k] = 0
-        instance[k-1] = 2
-        instance[k].should == 0
-        instance[k-1].should == 2
-      rescue => e
-        puts "failed class=#{c} key=#{k} #{e}" 
-        throw e # allow rspec to see the right trace'ish
-      end
+        it "should allow for setting the right keys #{k} #{c}" do
+          instance = c.new
+          instance[k].should == nil
+          instance[k] = 0
+          instance[k-1] = 2
+          instance[k].should == 0
+          instance[k-1].should == 2
+        end
       }
     }
-  end
 
 end

@@ -5,6 +5,8 @@ can you use GoogleHashDenseDouble *any way*?
 
 = maybe =
 
+auto-serialize [hmm...they can already do this in ruby tho...]
+
 could be faster:
 
 http://code.google.com/p/ulib/wiki/AlignedHashingPerformance
