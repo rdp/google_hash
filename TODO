@@ -1,3 +1,10 @@
+one spec fails linux 64 bit
+
+delete for dense
+can you use GoogleHashDenseDouble *any way*?
+
+= maybe =
+
 could be faster:
 
 http://code.google.com/p/ulib/wiki/AlignedHashingPerformance
