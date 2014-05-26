@@ -275,17 +275,22 @@ describe "google_hash" do
     all_classes = get_all_classes
     all_classes.select{|c| c.to_s =~ /(int|long|double)to/i}.each{|c| 
       p c
-      keys = [0, 1, -1, 1<<29]
+      keys = [0, 1, -1, 2, -1, 1<<29]
       if OS.bits == 64
         keys << (1<<61)
       end
       keys.each{|k|
+      begin
         instance = c.new
-		    instance[k].should == nil
+        instance[k].should == nil
         instance[k] = 0
         instance[k-1] = 2
         instance[k].should == 0
         instance[k-1].should == 2
+      rescue => e
+        puts "failed class=#{c} key=#{k} #{e}" 
+        throw e # allow rspec to see the right trace'ish
+      end
       }
     }
   end
