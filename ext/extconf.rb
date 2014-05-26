@@ -33,7 +33,7 @@ if OS.bits == 32
   unreachable_long = "1<<31"
 else
   unreachable_int = "1<<31"
-  unreachable_long = "1<<63"
+  unreachable_long = "(long) 1<<63" # TODO NaN here instead or something? land mine otherwise? hmm...
 end
 
 ruby_key =  {:convert_keys_from_ruby => "", :convert_keys_to_ruby => "", :key_type => "VALUE", :english_key_type => "ruby",
