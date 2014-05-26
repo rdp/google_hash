@@ -273,7 +273,6 @@ describe "google_hash" do
   
     all_classes = get_all_classes
     all_classes.select{|c| c.to_s =~ /(int|long|double)to/i}.each{|c| 
-      p c
       keys = [0, 1, -1, 2, -1, 1<<29]
       if OS.bits == 64
         keys << (1<<61)
