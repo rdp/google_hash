@@ -1,2 +1,0 @@
-0.8.2
-hopefully building for os x mavericks'ish gcc's now
