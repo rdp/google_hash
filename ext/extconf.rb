@@ -13,7 +13,7 @@ Dir.chdir 'sparsehash-2.0.2' do
     configure = "sh configure --prefix=#{dir}"
     puts configure
     system configure
-    system "make"
+    system "make #{ARGV[0]}" # allow ruby extconf.rb -j 2 for parallel/faster builds
     system "make install"
   end
 end
