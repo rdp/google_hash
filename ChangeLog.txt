@@ -1,3 +1,6 @@
+0.8.3
+  add #delete method to DenseHash
+
 0.8.2
 hopefully building for os x mavericks'ish gcc's now
 
