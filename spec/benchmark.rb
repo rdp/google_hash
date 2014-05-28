@@ -1,7 +1,7 @@
-require '../ext/google_hash'
+require 'sane' # gem
+require_relative '../ext/google_hash'
 require 'benchmark'
 require 'hitimes' # gem
-require 'sane' # gem
 
 def measure
  Hitimes::Interval.measure { yield }
@@ -15,14 +15,15 @@ end
 def go num
   puts RUBY_DESCRIPTION
   puts "inserting #{num} objects"
-  puts "remember that these may be more RAM space efficient than ruby's standard hash, as well, esp. the sparse hash, and that it has specialized hashes to deal with the case of just using integers for keys, etc."
+  puts "remember that these may be more RAM space efficient than ruby's standard hash, as well, esp. the sparse hash--see the file bench_gc.rb"
   puts "double is like float, long is like a large int"
   # get all existing
-  all_google_hashmap_classes = Object.constants.grep(/Goog/).reject{|n| n == :GoogleHash}.map{|n| eval n.to_s}
-  all = [Hash] + all_google_hashmap_classes
+  all_google_hashmap_classes = Object.constants.grep(/^GoogleHash.*/).reject{|n| n == :GoogleHash}.map{|n| eval n.to_s}
+  all = all_google_hashmap_classes + [Hash]
 
   for name in all do
-    GC.start
+    GC.start # try to clear the previous run's hash from memory :)
+    GC.disable # don't let this taint runs
     subject = name.new
     puts
 	if name == Hash

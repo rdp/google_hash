@@ -3,9 +3,16 @@ The "google_hash" gem.
 Its goal. To boldly be faster than any ruby hash has before (cue star trek TNG theme...).
 
 Well, really the goal is a better hash for Ruby, either one that is faster or more space efficient than ruby's default.  
-To attempt to accomplish this, this library wraps the google hash sparse and dense hashes [1], which seem to perform much better
-at least for the #each method.  It also creates some "specialized" hashes, for instance, those that take an integer for their key,
-for even better performance.
+To attempt to accomplish this, this library wraps the google hash sparse and dense hashes [1], which may perform better
+for your use case [make sure to benchmark before and after!].  
+It also creates some "specialized" hashes, for instance, those that take an integer for their key, for even better performance
+and decreased "garbage collected" RAM use, which can significantely speed up certain apps.
+
+# how to run this benchmark:
+
+$ cd ext && ruby extconf.rb && make
+$ cd ../spec
+$ ruby benchmark.rb
 
 ruby 1.9.3p194 (2012-04-20 revision 35410) [i686-linux]
 inserting 400000 objects
