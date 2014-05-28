@@ -83,7 +83,7 @@ for the case of the Sparse version.
 
 == Installation ==
 
-gem install google_hash (if on doze, you'll also first need the devkit installed).
+gem install google_hash (if on windows, you'll also need the devkit installed).
 
 == usage ==
 
