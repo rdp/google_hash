@@ -21,6 +21,8 @@ end
 $CFLAGS += " -I./local_installed/include "
 $CPPFLAGS += " -I./local_installed/include "
 
+puts "running from #{Dir.pwd}"
+
 if RUBY_VERSION < '1.9'
   # appears to need this to link using gcc on 1.8 [mingw at least]
   $LDFLAGS += " -lstdc++ "
@@ -106,7 +108,7 @@ end
 template = ERB.new(File.read('template/main.cpp.erb'))
 File.write 'main.cpp', template.result(binding)
 
-Config::CONFIG['CPP'] = "g++ -E" # else cannot check for c++ headers? huh wuh?
+RbConfig::CONFIG['CPP'] = "g++ -E" # else cannot check for c++ headers? huh wuh?
 have_header('tr1/functional')
 
 if have_header('functional') && OS.x? && !have_header('tr1/functional')
