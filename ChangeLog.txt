@@ -1,8 +1,11 @@
+0.8.4
+  attempt to fix poor build/gem distro
+
 0.8.3
   add #delete method to DenseHash
 
 0.8.2
-hopefully building for os x mavericks'ish gcc's now
+  hopefully building for os x mavericks'ish gcc's now
 
 0.8.1:
   work with OS X newer compilers
