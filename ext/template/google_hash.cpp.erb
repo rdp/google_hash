@@ -105,7 +105,13 @@ struct eqrb
 };
 
 #ifndef RBIGNUM_DIGITS
-# define RBIGNUM_DIGITS(a) RBIGNUM(a)->digits
+
+# ifdef RBIGNUM
+   /* 1.8 'ish */
+#   define RBIGNUM_DIGITS(a) RBIGNUM(a)->digits
+# else
+  /* 2.2.0 has no way to do this? */
+# endif
 #endif
 
 struct hashrb
@@ -129,14 +135,15 @@ struct hashrb
               case T_SYMBOL:
                // ltodo
                 return hash_me;
-              case T_BIGNUM:
-	            return LONG2FIX(((long*)(RBIGNUM_DIGITS(hash_me)))[0]); // its first digit...I'm thinkin'
-	             // not sure if this is faster or not...
-	             //case T_STRING:
+             // we don't actually do bignums yet, though rb_big2int might help here...
+                 // case T_BIGNUM:
+	         //   return LONG2FIX(((long*)(RBIGNUM_DIGITS(hash_me)))[0]); // its first digit...I'm thinkin'
+	     // not sure if this is faster or not...
+	    //case T_STRING:
 	             //return H(StringValueCStr(hash_me)); // populate/lookup 0.26 -> 0.23 [core is 0.16 somehow]
 	             // perhaps they cache?
 	             //return H(RSTRING_PTR(hash_me)); // 0.23 -> -.22
-	          }        
+	   }        
            
             VALUE hval = rb_funcall(hash_me, id_hash, 0);
             
@@ -144,8 +151,8 @@ struct hashrb
             switch (TYPE(hval)) {
               case T_FIXNUM:
 	              return hval;
-              case T_BIGNUM:
-	              return LONG2FIX(((long*)(RBIGNUM_DIGITS(hval)))[0]);
+              //??case T_BIGNUM:
+	      //??        return LONG2FIX(((long*)(RBIGNUM_DIGITS(hval)))[0]);
               default:
 	              hval = rb_to_int(hval);
 	              goto retry;

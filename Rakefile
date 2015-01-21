@@ -8,7 +8,7 @@ Jeweler::Tasks.new do |gemspec|
     gemspec.email = "rogerdpack@gmail.com"
     gemspec.homepage = "http://github.com/rdp/ruby_google_hash"
     gemspec.authors = ["rogerdpack"]
-    gemspec.add_runtime_dependency 'sane', '~> 0' # real dependency as it's used for building the gem, in the extconf.rb file itself
+    gemspec.add_runtime_dependency 'sane', '~> 0' # real dependency as it's used for building the gem, in the extconf.rb file itself, but not actually required by the gem at runtime 
     gemspec.add_development_dependency('hitimes', '~> 0')
 end
 

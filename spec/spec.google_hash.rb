@@ -215,8 +215,7 @@ describe "google_hash" do
 	end
   end
   
-  it "should do bignum to doubles et al" do
-    a = GoogleHashDenseDoubleToDouble.new
+  def test_big_numbers a
     a[10000000000000000000] = 1
     a[10000000000000000000].should == 1
     a[1] = 10000000000000000000
@@ -226,12 +225,17 @@ describe "google_hash" do
     a[10000000000000000000] = 10000000000000000000
     a[10000000000000000000].should == 10000000000000000000
   end
+
+  it "should do bignum to doubles et al" do
+    test_big_numbers( GoogleHashDenseDoubleToDouble.new)
+  end
   
-  it "should allow for storing true bignums" do
-    pending
-    'TODO: same as above plus the following:'
-    a = GoogleHashDenseBignumToRuby.new
+  it "should allow for storing true BigNum" do
+    pending 'caring about bignums at all and even having the classes in there'
+    test_big_numbers(GoogleHashDenseBigNumToRuby.new)
+    # and test the to ruby aspect
     a[10000000000000000000] = 'abc'
+    a[10000000000000000000].should == 'abc'
   end
   
   it "should have an Enumerator return for values, keys [?] instead of an array?"
