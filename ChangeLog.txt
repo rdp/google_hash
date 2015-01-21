@@ -1,3 +1,6 @@
+0.8.5
+  fix build for 2.2.x [I hope]
+
 0.8.4
   attempt to fix poor build/gem distro
 
