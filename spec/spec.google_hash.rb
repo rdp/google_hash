@@ -269,8 +269,7 @@ describe "google_hash" do
     all_classes.select{|c| c.to_s =~ /(int|long|double)to/i}.each{|c| 
       keys = [0, 1, -1, 2, -1, 1<<29]
       if OS.bits == 64
-        # this is not a valid key since it's not a fixnum, google hash needs those [?]
-        # keys << (1<<61)
+        keys << (1<<61)
       end
       keys.each{|k|
         it "should allow for setting the right keys #{k} #{c}" do
