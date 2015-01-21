@@ -11,5 +11,6 @@ Jeweler::Tasks.new do |gemspec|
     gemspec.add_runtime_dependency 'sane', '~> 0' # real dependency as it's used for building the gem, in the extconf.rb file itself, but not actually required by the gem at runtime 
     gemspec.add_development_dependency('hitimes', '~> 0')
     gemspec.add_development_dependency('rspec', '~> 2.14.1')
+    gemspec.add_development_dependency('jeweler')
 end
 
