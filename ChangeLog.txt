@@ -1,3 +1,6 @@
+0.8.7
+  add #each_pair method
+  
 0.8.6
   add #size method
 
