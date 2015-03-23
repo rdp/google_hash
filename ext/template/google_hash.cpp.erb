@@ -359,6 +359,7 @@ void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
     rb_define_method(rb_cGoogleHashLocal, "[]=", RUBY_METHOD_FUNC(rb_ghash_set), 2); 
     rb_define_method(rb_cGoogleHashLocal, "[]", RUBY_METHOD_FUNC(rb_ghash_get_value), 1); 
     rb_define_method(rb_cGoogleHashLocal, "each", RUBY_METHOD_FUNC(rb_ghash_each), 0);	
+    rb_define_method(rb_cGoogleHashLocal, "each_pair", RUBY_METHOD_FUNC(rb_ghash_each), 0);	
     rb_define_method(rb_cGoogleHashLocal, "values", RUBY_METHOD_FUNC(rb_ghash_values), 0); 
     rb_define_method(rb_cGoogleHashLocal, "keys", RUBY_METHOD_FUNC(rb_ghash_keys), 0); 
     rb_define_method(rb_cGoogleHashLocal, "has_key?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);

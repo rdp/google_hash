@@ -56,6 +56,9 @@ describe "google_hash" do
 	sum = 0
     @subject.each{|k, v| sum += k; sum += v}
 	sum.should == (33+34)
+  	sum = 0
+    @subject.each_pair{|k, v| sum += k; sum += v}
+	sum.should == (33+34)
     @subject[33] = 'abc'
     @subject.each{|k, v|
       k.should == 33
