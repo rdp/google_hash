@@ -369,6 +369,7 @@ void init_<%= type %>_<%= english_key_type %>_to_<%= english_value_type %>() {
     rb_define_method(rb_cGoogleHashLocal, "include?", RUBY_METHOD_FUNC(rb_ghash_get_present), 1);
     rb_define_method(rb_cGoogleHashLocal, "keys_combination_2", RUBY_METHOD_FUNC(rb_ghash_combination_2), 0); 
     rb_define_method(rb_cGoogleHashLocal, "length", RUBY_METHOD_FUNC(rb_ghash_size), 0);
+    rb_define_method(rb_cGoogleHashLocal, "size", RUBY_METHOD_FUNC(rb_ghash_size), 0);
     // add a higher quality #inspect...
     rb_eval_string("class <%= class_name %>;def inspect;all = '<%= class_name %> {'; join = []; self.each{|k, v| join << (k.to_s + '=>' + v.to_s)}; all << join.join(',') << '}'; end; end");
     id_eql = rb_intern("eql?");

@@ -52,6 +52,7 @@ describe "google_hash" do
     @subject.each{|k, v| raise}
 	@subject[33] = 34
     @subject.length.should == 1
+    @subject.size.should == 1
 	sum = 0
     @subject.each{|k, v| sum += k; sum += v}
 	sum.should == (33+34)
@@ -63,6 +64,7 @@ describe "google_hash" do
 	
     @subject.clear
 	@subject.length.should == 0
+	@subject.size.should == 0
 	@subject.keys.should == []
     @subject[33] = 'abc'
     @subject.delete(33).should == 'abc' # we don't actually have these methods yet :)
