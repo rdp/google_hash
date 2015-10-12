@@ -1,3 +1,6 @@
+0.8.9
+  hopefully fix build failure OS X newer xcode releases
+
 0.8.8
  re-deploy from corrupted deploy [?]
 
