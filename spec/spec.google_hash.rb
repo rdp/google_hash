@@ -282,7 +282,7 @@ describe "google_hash" do
         keys << (1<<61)
       end
       keys.each{|k|
-        it "should allow for setting the right keys #{k} #{c}" do
+        it "should allow for setting the right keys key=#{k} class=#{c} (1<<61=#{1<<61})" do
           instance = c.new
           instance[k].should == nil
           instance[k] = 0
