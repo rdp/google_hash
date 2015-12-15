@@ -8,6 +8,11 @@ rescue LoadError
   require 'rspec/autorun'
 end
 
+
+RSpec.configure do |config|
+  config.expect_with(:rspec) { |c| c.syntax = :should } # silence warning
+end
+
 describe "google_hash" do
 
   before do
@@ -181,7 +186,7 @@ describe "google_hash" do
   
   it "should raise on errant values" do
     a = GoogleHashDenseIntToInt.new
-    proc { a[3] = 'abc'}.should raise_error
+    proc { a[3] = 'abc'}.should raise_error(TypeError)
   end
   
   it "should do bignum values as doubles" do
